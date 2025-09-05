@@ -125,10 +125,7 @@ class MealCalculator {
         await this.setupEventListeners();
         await this.updateNutritionDisplay();
 
-        // Barcode scanner state
-        this.scannerActive = false;
-        this.currentCamera = 0;
-        this.availableCameras = [];
+        // Barcode scanner removed
 
         // Image capture elements
         this.imageCaptureStream = null;
@@ -272,8 +269,8 @@ class MealCalculator {
             item.innerHTML = `
                 <div class="food-content">
                     <div class="food-details">
-                        <div class="food-name">${food.label}</div>
-                        <div class="food-calories">${calories} kcal per 100g</div>
+                <div class="food-name">${food.label}</div>
+                <div class="food-calories">${calories} kcal per 100g</div>
                     </div>
                 </div>
             `;
@@ -328,10 +325,8 @@ class MealCalculator {
                 if (e.target.classList.contains('modal')) {
                     if (modal.id === 'food-selector-modal') {
                         this.closeFoodSelector();
-                    } else if (modal.id === 'barcode-scanner-modal') {
-                        this.closeBarcodeScanner();
                     } else if (modal.id === 'manual-barcode-modal') {
-                        this.closeManualBarcode();
+                        // removed
                     } else if (modal.id === 'image-capture-modal') {
                         this.closeImageCapture();
                     }
@@ -499,7 +494,7 @@ class MealCalculator {
 
         await new Promise(resolve => {
             requestAnimationFrame(() => {
-                container.innerHTML = '';
+        container.innerHTML = '';
                 resolve();
             });
         });
@@ -507,24 +502,24 @@ class MealCalculator {
         await Promise.all(this.meals[mealType].map(async item => {
             await new Promise(resolve => {
                 requestAnimationFrame(() => {
-                    const itemElement = document.createElement('div');
-                    itemElement.className = 'meal-item';
-                    itemElement.innerHTML = `
-                        <div class="meal-item-info">
-                            <div class="meal-item-name">${item.name}</div>
-                            <div class="meal-item-details">${item.portion} ${item.unit}</div>
-                        </div>
-                        <div class="meal-item-nutrition">
-                            <div class="meal-item-calories">${item.calories} kcal</div>
-                            <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
-                        </div>
-                        <button class="remove-item-btn" onclick="mealCalculator.removeItem('${mealType}', '${item.id}')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    `;
-                    container.appendChild(itemElement);
+            const itemElement = document.createElement('div');
+            itemElement.className = 'meal-item';
+            itemElement.innerHTML = `
+                <div class="meal-item-info">
+                    <div class="meal-item-name">${item.name}</div>
+                    <div class="meal-item-details">${item.portion} ${item.unit}</div>
+                </div>
+                <div class="meal-item-nutrition">
+                    <div class="meal-item-calories">${item.calories} kcal</div>
+                    <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
+                </div>
+                <button class="remove-item-btn" onclick="mealCalculator.removeItem('${mealType}', '${item.id}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(itemElement);
                     resolve();
-                });
+        });
             });
         }));
     }
@@ -556,7 +551,7 @@ class MealCalculator {
             fats: Math.round(totals.fats * 10) / 10
         };
     }
-    
+
     getTotalNutrient(nutrientType) {
         // Helper method for charts.js to get total of a specific nutrient
         const totals = this.calculateTotalNutrition();
@@ -591,10 +586,10 @@ class MealCalculator {
         const updateElements = async () => {
             return new Promise(resolve => {
                 requestAnimationFrame(() => {
-                    document.getElementById('total-calories').textContent = totals.calories;
-                    document.getElementById('total-protein').textContent = totals.protein;
-                    document.getElementById('total-carbs').textContent = totals.carbs;
-                    document.getElementById('total-fats').textContent = totals.fats;
+        document.getElementById('total-calories').textContent = totals.calories;
+        document.getElementById('total-protein').textContent = totals.protein;
+        document.getElementById('total-carbs').textContent = totals.carbs;
+        document.getElementById('total-fats').textContent = totals.fats;
                     resolve();
                 });
             });
@@ -620,23 +615,23 @@ class MealCalculator {
             
             await new Promise(resolve => {
                 requestAnimationFrame(() => {
-                    const progressFill = document.getElementById(`${nutrient}-progress`);
-                    const progressText = document.getElementById(`${nutrient}-text`);
-                    
+            const progressFill = document.getElementById(`${nutrient}-progress`);
+            const progressText = document.getElementById(`${nutrient}-text`);
+            
                     if (progressFill && progressText) {
-                        progressFill.style.width = `${percentage}%`;
-                        
-                        const unit = nutrient === 'calories' ? 'kcal' : 'g';
-                        progressText.textContent = `${current} / ${goal} ${unit}`;
-                        
-                        // Change color based on progress
-                        if (percentage >= 90) {
-                            progressFill.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
-                        } else if (percentage >= 50) {
-                            progressFill.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
-                        } else {
-                            progressFill.style.background = 'linear-gradient(90deg, #fc8181, #f56565)';
-                        }
+            progressFill.style.width = `${percentage}%`;
+            
+            const unit = nutrient === 'calories' ? 'kcal' : 'g';
+            progressText.textContent = `${current} / ${goal} ${unit}`;
+            
+            // Change color based on progress
+            if (percentage >= 90) {
+                progressFill.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
+            } else if (percentage >= 50) {
+                progressFill.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
+            } else {
+                progressFill.style.background = 'linear-gradient(90deg, #fc8181, #f56565)';
+            }
                     }
                     resolve();
                 });
@@ -659,7 +654,7 @@ class MealCalculator {
 
         await new Promise(resolve => {
             requestAnimationFrame(() => {
-                chart.innerHTML = '';
+        chart.innerHTML = '';
                 resolve();
             });
         });
@@ -670,16 +665,16 @@ class MealCalculator {
             if (mealCalories > 0) {
                 await new Promise(resolve => {
                     requestAnimationFrame(() => {
-                        const item = document.createElement('div');
-                        item.className = 'breakdown-item';
-                        item.innerHTML = `
-                            <div class="breakdown-item-name">${this.formatMealName(mealType)}</div>
-                            <div class="breakdown-item-calories">${mealCalories} kcal</div>
-                        `;
-                        chart.appendChild(item);
+                const item = document.createElement('div');
+                item.className = 'breakdown-item';
+                item.innerHTML = `
+                    <div class="breakdown-item-name">${this.formatMealName(mealType)}</div>
+                    <div class="breakdown-item-calories">${mealCalories} kcal</div>
+                `;
+                chart.appendChild(item);
                         resolve();
                     });
-                });
+        });
             }
         }));
     }
@@ -824,16 +819,7 @@ class MealCalculator {
         }, 3000);
     }
 
-    // Barcode Scanner Methods
-    openBarcodeScanner() {
-        document.getElementById('barcode-scanner-modal').style.display = 'block';
-        this.initBarcodeScanner();
-    }
-
-    closeBarcodeScanner() {
-        document.getElementById('barcode-scanner-modal').style.display = 'none';
-        this.stopBarcodeScanner();
-    }
+    // Barcode feature removed
 
     // Image Capture Methods
     openImageCapture() {
@@ -1075,7 +1061,7 @@ class MealCalculator {
 
         document.getElementById('selected-food-name').textContent = this.selectedFood.name;
         document.getElementById('portion-size').value = 100;
-        document.getElementById('portion-unit').value = 'g';
+        document.getElementById('portion-unit').value = 'gram';
         this.updateNutritionPreview();
 
         // Close recognized foods modal
@@ -1214,8 +1200,8 @@ class MealCalculator {
                     document.getElementById('selected-food-name').textContent = this.selectedFood.name;
                     document.getElementById('portion-size').value = 100;
                     document.getElementById('portion-unit').value = 'gram';
-                    this.updateNutritionPreview();
-                    document.getElementById('food-selector-modal').style.display = 'block';
+            this.updateNutritionPreview();
+            document.getElementById('food-selector-modal').style.display = 'block';
                     
                     this.showMessage('Product found in USDA database!', 'success');
                     return;
@@ -1376,8 +1362,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Initialize recipe calculator last
         await RecipeCalculator.initialize();
-        
-        // Add some sample data for demonstration
+    
+    // Add some sample data for demonstration
     } catch (error) {
         console.error('Failed to initialize application:', error);
     }

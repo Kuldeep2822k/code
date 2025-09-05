@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian Meal Calculator</title>
+    <title>Smart Cart: Grocery List & Meal Planner</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="animations.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -66,8 +66,8 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <h1><i class="fas fa-utensils"></i> Indian Meal Calculator</h1>
-            <p>Plan your complete daily nutrition with focus on Indian foods</p>
+            <h1><i class="fas fa-basket-shopping"></i> Smart Cart: Grocery List & Meal Planner</h1>
+            <p>Plan meals, build grocery lists, and track nutrition easily</p>
             <div class="competition-link">
                 <a href="competition.html"><i class="fas fa-trophy"></i> Competition Entry</a>
                 <a href="demo.html" class="demo-link"><i class="fas fa-film"></i> Watch Demo</a>
@@ -259,9 +259,7 @@
                 <div class="search-section">
                     <div class="search-controls">
                         <input type="text" id="food-search" placeholder="Search for food..." oninput="searchFoods()">
-                        <button class="barcode-btn" onclick="openBarcodeScanner()" title="Scan barcode">
-                            <i class="fas fa-barcode"></i>
-                        </button>
+                        
                         <button class="camera-btn" onclick="openImageCapture()" title="Capture food image">
                             <i class="fas fa-camera"></i>
                         </button>
@@ -303,52 +301,7 @@
         </div>
     </div>
 
-    <!-- Barcode Scanner Modal -->
-    <div class="modal" id="barcode-scanner-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Scan Barcode</h3>
-                <span class="close-btn" onclick="closeBarcodeScanner()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="scanner-container">
-                    <div id="barcode-scanner"></div>
-                    <div class="scanner-instructions">
-                        <p>Point your camera at a product barcode to scan it</p>
-                        <p class="scanner-hint">Make sure the barcode is well-lit and clearly visible</p>
-                    </div>
-                    <div class="scanner-controls">
-                        <button class="scanner-btn" onclick="toggleCamera()">
-                            <i class="fas fa-camera"></i> Switch Camera
-                        </button>
-                        <button class="scanner-btn" onclick="manualBarcodeEntry()">
-                            <i class="fas fa-keyboard"></i> Enter Manually
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Manual Barcode Entry Modal -->
-    <div class="modal" id="manual-barcode-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Enter Barcode Manually</h3>
-                <span class="close-btn" onclick="closeManualBarcode()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="barcode-input">Barcode Number:</label>
-                    <input type="text" id="barcode-input" placeholder="Enter 12-13 digit barcode" maxlength="13">
-                </div>
-                <div class="modal-footer">
-                    <button class="cancel-btn" onclick="closeManualBarcode()">Cancel</button>
-                    <button class="add-food-btn" onclick="searchByBarcode()">Search</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Action Buttons -->
     <div class="action-buttons">
@@ -367,7 +320,6 @@
     </div>
 
     <!-- External Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
     <!-- Image Capture Modal -->
     <div id="image-capture-modal" class="modal">
         <div class="modal-content">
