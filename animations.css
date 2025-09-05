@@ -1,0 +1,254 @@
+/* animations.css - Enhanced UI animations and transitions for the Indian Meal Calculator */
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Slide In From Right */
+@keyframes slideInRight {
+    from { transform: translateX(50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Slide In From Left */
+@keyframes slideInLeft {
+    from { transform: translateX(-50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Slide In From Bottom */
+@keyframes slideInBottom {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+}
+
+/* Rotate Animation */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Shake Animation */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Apply animations to elements */
+
+/* Header Animation */
+.header {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Tab Buttons Animation */
+.tab-btn {
+    transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn.active {
+    animation: pulse 0.5s ease;
+}
+
+/* Meal Section Animations */
+.meal-section {
+    animation: slideInBottom 0.5s ease-out forwards;
+    opacity: 0;
+    animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+/* Stagger meal sections */
+.meal-section:nth-child(1) { --index: 1; }
+.meal-section:nth-child(2) { --index: 2; }
+.meal-section:nth-child(3) { --index: 3; }
+.meal-section:nth-child(4) { --index: 4; }
+.meal-section:nth-child(5) { --index: 5; }
+.meal-section:nth-child(6) { --index: 6; }
+
+/* Food Item Animation */
+.food-item {
+    transition: all 0.3s ease;
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+.food-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Add Food Button Animation */
+.add-item-btn {
+    transition: all 0.3s ease;
+}
+
+.add-item-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Nutrition Cards Animation */
+.nutrition-card {
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: calc(var(--index, 0) * 0.15s);
+    opacity: 0;
+}
+
+.nutrition-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Stagger nutrition cards */
+.nutrition-card:nth-child(1) { --index: 1; }
+.nutrition-card:nth-child(2) { --index: 2; }
+.nutrition-card:nth-child(3) { --index: 3; }
+.nutrition-card:nth-child(4) { --index: 4; }
+
+/* Progress Bar Animation */
+.progress-fill {
+    transition: width 1s ease-out, background-color 0.5s ease;
+}
+
+/* Modal Animation */
+.modal-content {
+    animation: slideInBottom 0.4s ease-out;
+}
+
+/* Search Results Animation */
+.food-result-item {
+    animation: fadeIn 0.3s ease-out forwards;
+    opacity: 0;
+    animation-delay: calc(var(--index, 0) * 0.05s);
+}
+
+/* Stagger search results (will be applied via JavaScript) */
+
+/* Loading Spinner Enhanced Animation */
+.spinner {
+    animation: rotate 1s linear infinite;
+}
+
+/* Action Buttons Animation */
+.action-btn {
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Add Food Button Attention Animation */
+.add-food-btn {
+    transition: all 0.3s ease;
+}
+
+.add-food-btn:hover {
+    animation: pulse 1s infinite;
+}
+
+/* Error Shake Animation */
+.error {
+    animation: shake 0.5s ease;
+}
+
+/* Success Animation */
+.success {
+    animation: pulse 0.5s ease;
+}
+
+/* Tab Content Transition */
+.tab-content {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tab-content.active {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Meal Breakdown Chart Animation */
+.breakdown-chart {
+    animation: fadeIn 1s ease-out;
+}
+
+/* Goals Form Animation */
+.goals-form .form-group {
+    animation: slideInLeft 0.4s ease-out forwards;
+    opacity: 0;
+    animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+/* Stagger form groups */
+.goals-form .form-group:nth-child(1) { --index: 1; }
+.goals-form .form-group:nth-child(2) { --index: 2; }
+.goals-form .form-group:nth-child(3) { --index: 3; }
+.goals-form .form-group:nth-child(4) { --index: 4; }
+
+/* Preset Buttons Animation */
+.preset-btn {
+    transition: all 0.3s ease;
+}
+
+.preset-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Camera Capture Animation */
+#image-capture-video-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+#image-capture-preview-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Recognized Foods Animation */
+#recognized-foods .food-result-item {
+    animation: slideInBottom 0.3s ease-out forwards;
+    opacity: 0;
+    animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+/* Barcode Scanner Animation */
+#barcode-scanner {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Scanner Instructions Pulse */
+.scanner-instructions {
+    animation: pulse 2s infinite;
+}
+
+/* Add to JavaScript to apply staggered animations to dynamically created elements */
+/* 
+function applyStaggeredAnimation(elements, className) {
+    elements.forEach((el, index) => {
+        el.style.setProperty('--index', index + 1);
+        el.classList.add(className);
+    });
+}
+*/

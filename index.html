@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Meal Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Recipe Calculator Styles */
+        #recipe-modal .modal-content {
+            max-width: 800px;
+        }
+
+        .recipe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .recipe-form input[type="text"],
+        .recipe-form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .ingredient-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .ingredient-item input,
+        .ingredient-item select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .remove-ingredient {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .recipe-servings {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .recipe-servings input {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-utensils"></i> Indian Meal Calculator</h1>
+            <p>Plan your complete daily nutrition with focus on Indian foods</p>
+            <div class="competition-link">
+                <a href="competition.html"><i class="fas fa-trophy"></i> Competition Entry</a>
+                <a href="demo.html" class="demo-link"><i class="fas fa-film"></i> Watch Demo</a>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="planner">Meal Planner</button>
+            <button class="tab-btn" data-tab="nutrition">Nutrition Summary</button>
+            <button class="tab-btn" data-tab="goals">Daily Goals</button>
+            <button class="tab-btn" data-tab="meal-plans">Sample Meals</button>
+        </nav>
+
+        <!-- Meal Planner Tab -->
+        <div class="tab-content active" id="planner">
+            <div class="meals-grid">
+                <!-- Breakfast Section -->
+                <div class="meal-section">
+                    <h3><i class="fas fa-sun"></i> Breakfast</h3>
+                    <div class="meal-items" id="breakfast-items"></div>
+                    <button class="add-item-btn" onclick="showFoodSelector('breakfast')">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                </div>
+
+                <!-- Morning Snack -->
+                <div class="meal-section">
+                    <h3><i class="fas fa-coffee"></i> Morning Snack</h3>
+                    <div class="meal-items" id="morning-snack-items"></div>
+                    <button class="add-item-btn" onclick="showFoodSelector('morning-snack')">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                </div>
+
+                <!-- Lunch Section -->
+                <div class="meal-section">
+                    <h3><i class="fas fa-cloud-sun"></i> Lunch</h3>
+                    <div class="meal-items" id="lunch-items"></div>
+                    <button class="add-item-btn" onclick="showFoodSelector('lunch')">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                </div>
+
+                <!-- Afternoon Snack -->
+                <div class="meal-section">
+                    <h3><i class="fas fa-cookie-bite"></i> Afternoon Snack</h3>
+                    <div class="meal-items" id="afternoon-snack-items"></div>
+                    <button class="add-item-btn" onclick="showFoodSelector('afternoon-snack')">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                </div>
+
+                <!-- Dinner Section -->
+                <div class="meal-section">
+                    <h3><i class="fas fa-moon"></i> Dinner</h3>
+                    <div class="meal-items" id="dinner-items"></div>
+                    <button class="add-item-btn" onclick="showFoodSelector('dinner')">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                </div>
+
+                <!-- Evening Snack -->
+                <div class="meal-section">
+                    <h3><i class="fas fa-star"></i> Evening Snack</h3>
+                    <div class="meal-items" id="evening-snack-items"></div>
+                    <button class="add-item-btn" onclick="showFoodSelector('evening-snack')">
+                        <i class="fas fa-plus"></i> Add Food Item
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Summary Tab -->
+        <div class="tab-content" id="nutrition">
+            <div class="nutrition-dashboard">
+                <div class="nutrition-cards">
+                    <div class="nutrition-card calories">
+                        <h4>Total Calories</h4>
+                        <div class="value" id="total-calories">0</div>
+                        <div class="unit">kcal</div>
+                    </div>
+                    <div class="nutrition-card protein">
+                        <h4>Protein</h4>
+                        <div class="value" id="total-protein">0</div>
+                        <div class="unit">g</div>
+                    </div>
+                    <div class="nutrition-card carbs">
+                        <h4>Carbohydrates</h4>
+                        <div class="value" id="total-carbs">0</div>
+                        <div class="unit">g</div>
+                    </div>
+                    <div class="nutrition-card fats">
+                        <h4>Fats</h4>
+                        <div class="value" id="total-fats">0</div>
+                        <div class="unit">g</div>
+                    </div>
+                </div>
+
+                <div class="meal-breakdown">
+                    <h3>Nutrition by Meal</h3>
+                    <div class="breakdown-chart" id="meal-breakdown-chart"></div>
+                </div>
+
+                <div class="progress-bars">
+                    <div class="progress-item">
+                        <label>Calories</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="calories-progress"></div>
+                        </div>
+                        <span class="progress-text" id="calories-text">0 / 2000 kcal</span>
+                    </div>
+                    <div class="progress-item">
+                        <label>Protein</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="protein-progress"></div>
+                        </div>
+                        <span class="progress-text" id="protein-text">0 / 150 g</span>
+                    </div>
+                    <div class="progress-item">
+                        <label>Carbs</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="carbs-progress"></div>
+                        </div>
+                        <span class="progress-text" id="carbs-text">0 / 250 g</span>
+                    </div>
+                    <div class="progress-item">
+                        <label>Fats</label>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="fats-progress"></div>
+                        </div>
+                        <span class="progress-text" id="fats-text">0 / 67 g</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Goals Tab -->
+        <div class="tab-content" id="goals">
+            <div class="goals-section">
+                <h3>Set Your Daily Nutrition Goals</h3>
+                <div class="goals-form">
+                    <div class="form-group">
+                        <label for="goal-calories">Daily Calorie Goal</label>
+                        <input type="number" id="goal-calories" value="2000" min="1000" max="4000">
+                        <span>kcal</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-protein">Protein Goal</label>
+                        <input type="number" id="goal-protein" value="150" min="50" max="300">
+                        <span>g</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-carbs">Carbohydrates Goal</label>
+                        <input type="number" id="goal-carbs" value="250" min="100" max="500">
+                        <span>g</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="goal-fats">Fats Goal</label>
+                        <input type="number" id="goal-fats" value="67" min="30" max="150">
+                        <span>g</span>
+                    </div>
+                    <button class="save-goals-btn" onclick="saveGoals()">
+                        <i class="fas fa-save"></i> Save Goals
+                    </button>
+                </div>
+
+                <div class="quick-goals">
+                    <h4>Quick Goal Presets</h4>
+                    <div class="preset-buttons">
+                        <button class="preset-btn" onclick="setPreset('weight-loss')">Weight Loss</button>
+                        <button class="preset-btn" onclick="setPreset('maintenance')">Maintenance</button>
+                        <button class="preset-btn" onclick="setPreset('muscle-gain')">Muscle Gain</button>
+                        <button class="preset-btn" onclick="setPreset('athletic')">Athletic</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Food Selector Modal -->
+    <div class="modal" id="food-selector-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Food Item</h3>
+                <span class="close-btn" onclick="closeFoodSelector()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="search-section">
+                    <div class="search-controls">
+                        <input type="text" id="food-search" placeholder="Search for food..." oninput="searchFoods()">
+                        <button class="barcode-btn" onclick="openBarcodeScanner()" title="Scan barcode">
+                            <i class="fas fa-barcode"></i>
+                        </button>
+                        <button class="camera-btn" onclick="openImageCapture()" title="Capture food image">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="search-options">
+                        <label>
+                            <input type="checkbox" id="use-api-search" checked>
+                            Use online food database
+                        </label>
+                    </div>
+                    <div class="food-results" id="food-results"></div>
+                    <div class="loading-indicator" id="search-loading" style="display: none;">
+                        <div class="spinner"></div>
+                        <span>Searching...</span>
+                    </div>
+                </div>
+                <div class="portion-section">
+                    <h4>Selected Food: <span id="selected-food-name">-</span></h4>
+                    <div class="portion-controls">
+                        <label for="portion-size">Portion Size:</label>
+                        <input type="number" id="portion-size" value="100" min="0.1" step="0.1">
+                        <select id="portion-unit">
+                            <option value="gram">gram</option>
+                            <option value="cup">cup</option>
+                            <option value="piece">piece</option>
+                            <option value="serving">serving</option>
+                            <option value="tablespoon">tablespoon</option>
+                            <option value="teaspoon">teaspoon</option>
+                            <option value="ounce">ounce</option>
+                        </select>
+                    </div>
+                    <div class="nutrition-preview" id="nutrition-preview"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel-btn" onclick="closeFoodSelector()">Cancel</button>
+                    <button class="add-food-btn" onclick="addSelectedFood()">Add Food</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barcode Scanner Modal -->
+    <div class="modal" id="barcode-scanner-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Scan Barcode</h3>
+                <span class="close-btn" onclick="closeBarcodeScanner()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="scanner-container">
+                    <div id="barcode-scanner"></div>
+                    <div class="scanner-instructions">
+                        <p>Point your camera at a product barcode to scan it</p>
+                        <p class="scanner-hint">Make sure the barcode is well-lit and clearly visible</p>
+                    </div>
+                    <div class="scanner-controls">
+                        <button class="scanner-btn" onclick="toggleCamera()">
+                            <i class="fas fa-camera"></i> Switch Camera
+                        </button>
+                        <button class="scanner-btn" onclick="manualBarcodeEntry()">
+                            <i class="fas fa-keyboard"></i> Enter Manually
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Barcode Entry Modal -->
+    <div class="modal" id="manual-barcode-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Enter Barcode Manually</h3>
+                <span class="close-btn" onclick="closeManualBarcode()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="barcode-input">Barcode Number:</label>
+                    <input type="text" id="barcode-input" placeholder="Enter 12-13 digit barcode" maxlength="13">
+                </div>
+                <div class="modal-footer">
+                    <button class="cancel-btn" onclick="closeManualBarcode()">Cancel</button>
+                    <button class="add-food-btn" onclick="searchByBarcode()">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button class="action-btn clear-all" onclick="clearAllMeals()">
+            <i class="fas fa-trash"></i> Clear All
+        </button>
+        <button class="action-btn save-plan" onclick="saveMealPlan()">
+            <i class="fas fa-save"></i> Save Plan
+        </button>
+        <button class="action-btn export-plan" onclick="exportMealPlan()">
+            <i class="fas fa-download"></i> Export
+        </button>
+        <button class="action-btn create-recipe" onclick="recipeCalculator.openModal()">
+            <i class="fas fa-utensils"></i> Create Recipe
+        </button>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <!-- Image Capture Modal -->
+    <div id="image-capture-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-camera"></i> Capture Food Image</h3>
+                <span id="close-image-capture-btn" class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="image-capture-video-container">
+                    <video id="image-capture-video" autoplay playsinline muted></video>
+                    <div class="capture-instructions">
+                        <p>Position your food in the camera view and click "Capture"</p>
+                        <p class="capture-hint">Make sure the food is well-lit and clearly visible</p>
+                    </div>
+                    <div class="capture-controls">
+                        <button id="capture-image-btn" class="capture-btn">
+                            <i class="fas fa-camera"></i> Capture Image
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="image-capture-preview-container" style="display: none;">
+                    <img id="image-capture-preview" alt="Captured food image" />
+                    <div class="preview-controls">
+                        <button id="retake-image-btn" class="capture-btn secondary">
+                            <i class="fas fa-redo"></i> Retake Photo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recognized Foods Modal -->
+    <div id="recognized-foods-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-search"></i> Recognized Foods</h3>
+                <span class="close-btn" onclick="document.getElementById('recognized-foods-modal').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="recognized-foods"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Calculator Modal -->
+    <div id="recipe-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create Recipe</h3>
+                <span class="close-btn" onclick="recipeCalculator.closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="recipe-form" onsubmit="recipeCalculator.saveRecipe(event)">
+                    <div>
+                        <label for="recipe-name">Recipe Name:</label>
+                        <input type="text" id="recipe-name" required>
+                    </div>
+                    
+                    <div>
+                        <label for="recipe-description">Description:</label>
+                        <textarea id="recipe-description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="recipe-servings">
+                        <label for="recipe-servings">Servings:</label>
+                        <input type="number" id="recipe-servings" value="1" min="1" required>
+                    </div>
+                    
+                    <div>
+                        <label>Ingredients:</label>
+                        <div id="ingredients-list"></div>
+                        <button type="button" class="add-btn" onclick="recipeCalculator.addIngredientField()">
+                            <i class="fas fa-plus"></i> Add Ingredient
+                        </button>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-btn" onclick="recipeCalculator.closeModal()">Cancel</button>
+                        <button type="submit" class="save-btn">Save Recipe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+    <!-- Core Scripts -->
+    <script src="script.js"></script>
+    
+    <!-- Feature Scripts -->
+    <script src="recipe-calculator.js"></script>
+    <script src="charts.js"></script>
+    <script src="pdf-export.js"></script>
+    <script src="animations.js"></script>
+    <script src="tour.js"></script>
+    <script src="meal-plans.js"></script>
+    <script src="keyboard-shortcuts.js"></script>
+  </body>
+</html>

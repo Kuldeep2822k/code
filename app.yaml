@@ -1,0 +1,35 @@
+runtime: python39
+
+handlers:
+# Serve index.html for root path
+- url: /
+  static_files: index.html
+  upload: index.html
+
+# Serve all other static files
+- url: /(.*)
+  static_files: \1
+  upload: .*
+
+# Set proper MIME types
+- url: /(.*\.js)
+  static_files: \1
+  upload: .*\.js
+  mime_type: application/javascript
+
+- url: /(.*\.css)
+  static_files: \1
+  upload: .*\.css
+  mime_type: text/css
+
+- url: /(.*\.html)
+  static_files: \1
+  upload: .*\.html
+  mime_type: text/html
+
+# Default handler for any other files
+- url: /(.*)
+  static_files: \1
+  upload: .*
+
+

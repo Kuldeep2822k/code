@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Meal Calculator - Competition Entry</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Competition-specific styles */
+        .competition-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Navigation styles */
+        .competition-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .competition-nav a {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .competition-nav a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .competition-nav i {
+            margin-right: 8px;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: white;
+            padding: 60px 20px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: #ff7e5f;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            margin: 10px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #ff7e5f;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .demo-section {
+            background-color: #f9f9f9;
+            padding: 50px 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .demo-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .demo-video {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-video img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        
+        .tech-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .tech-item {
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .team-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .team-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .team-info {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .team-info p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #666;
+        }
+        
+        .footer a {
+            color: #ff7e5f;
+            text-decoration: none;
+        }
+        
+        /* Animation for feature cards */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .feature-card {
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+        .feature-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero-section p {
+                font-size: 1rem;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="competition-container">
+        <!-- Navigation -->
+        <nav class="competition-nav">
+            <a href="index.html"><i class="fas fa-home"></i> Main App</a>
+            <a href="demo.html"><i class="fas fa-film"></i> Watch Demo</a>
+        </nav>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1><i class="fas fa-utensils"></i> Indian Meal Calculator</h1>
+            <p>A comprehensive nutrition planning tool with focus on Indian cuisine</p>
+            <div>
+                <a href="index.html" class="cta-button"><i class="fas fa-play"></i> Launch App</a>
+                <a href="#features" class="cta-button"><i class="fas fa-info-circle"></i> Learn More</a>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section id="features">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <h3>Comprehensive Indian Foods Database</h3>
+                    <p>Access to 48+ traditional Indian dishes with accurate nutrition information, from regional specialties to everyday staples.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-camera"></i></div>
+                    <h3>Food Image Recognition</h3>
+                    <p>Simply take a photo of your food and our AI will identify it, making nutrition tracking faster and more intuitive than ever.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-barcode"></i></div>
+                    <h3>Barcode Scanning</h3>
+                    <p>Instantly add packaged foods by scanning their barcodes, with special support for Indian grocery products.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Real-time Nutrition Tracking</h3>
+                    <p>Monitor calories, protein, carbs, and fats with visual progress bars and detailed breakdowns by meal.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>Responsive Design</h3>
+                    <p>Seamlessly works across desktop, tablet, and mobile devices with an intuitive, touch-friendly interface.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+                    <h3>No Server Required</h3>
+                    <p>Runs entirely in the browser with local storage for data persistence, ensuring privacy and easy deployment.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Demo Section -->
+        <section class="demo-section">
+            <h2>See It In Action</h2>
+            <div class="demo-video">
+                <img src="https://via.placeholder.com/800x450?text=Demo+Video+Coming+Soon" alt="Demo Video">
+                <!-- Replace with actual video or screenshots -->
+            </div>
+        </section>
+        
+        <!-- Technical Section -->
+        <section class="tech-section">
+            <h2>Technical Highlights</h2>
+            <div class="tech-list">
+                <div class="tech-item">HTML5 / CSS3 / JavaScript</div>
+                <div class="tech-item">USDA Food Database API</div>
+                <div class="tech-item">Open Food Facts API</div>
+                <div class="tech-item">Quagga.js for Barcode Scanning</div>
+                <div class="tech-item">Local Storage</div>
+                <div class="tech-item">Responsive Design</div>
+                <div class="tech-item">Camera API</div>
+            </div>
+        </section>
+        
+        <!-- Team Section -->
+        <section class="team-section">
+            <h2>About The Project</h2>
+            <div class="team-info">
+                <p>The Indian Meal Calculator was developed to address the specific nutritional needs of those who enjoy Indian cuisine. Traditional nutrition apps often lack comprehensive data on Indian foods, making it difficult for users to accurately track their nutrition.</p>
+                <p>Our solution combines a user-friendly interface with powerful features like image recognition and barcode scanning, all while maintaining a focus on Indian dishes and ingredients.</p>
+                <p>The application is built with modern web technologies and requires no backend server, making it easy to deploy and scale.</p>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Indian Meal Calculator - Competition Entry | <a href="index.html">Launch Application</a></p>
+        </footer>
+    </div>
+    <!-- Animation Script -->
+    <script src="animations.js"></script>
+    
+    <!-- Guided Tour Script -->
+    <script src="tour.js"></script>
+    
+    <!-- PDF Export Script -->
+    <script src="pdf-export.js"></script>
+    
+    <!-- Keyboard Shortcuts Script -->
+    <script src="keyboard-shortcuts.js"></script>
+    
+    <script src="script.js"></script>
+    
+    <script>
+        // JavaScript for competition page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
