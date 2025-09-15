@@ -28,15 +28,7 @@ class RecipeCalculator {
                 });
             }
 
-            // Create toolbar container if it doesn't exist
-            let toolbarContainer = document.querySelector('.toolbar');
-            if (!toolbarContainer) {
-                toolbarContainer = document.createElement('div');
-                toolbarContainer.className = 'toolbar';
-                document.body.insertBefore(toolbarContainer, document.body.firstChild);
-                // Wait for container to be rendered
-                await new Promise(resolve => requestAnimationFrame(resolve));
-            }
+            
 
             // Initialize instance if not already initialized
             if (!window.recipeCalculator) {
@@ -54,24 +46,7 @@ class RecipeCalculator {
 
     async init() {
         try {
-            // Wait for toolbar to be available
-            await new Promise(resolve => {
-                const checkToolbar = () => {
-                    const toolbar = document.querySelector('.toolbar');
-                    if (toolbar) {
-                        this.addRecipeButton = document.createElement('button');
-                        this.addRecipeButton.id = 'add-recipe-button';
-                        this.addRecipeButton.className = 'action-button';
-                        this.addRecipeButton.innerHTML = '<i class="fas fa-book-open"></i> Add Recipe';
-                        toolbar.appendChild(this.addRecipeButton);
-                        resolve();
-                    } else {
-                        requestAnimationFrame(checkToolbar);
-                    }
-                };
-                checkToolbar();
-            });
-
+           
             // Create modal and wait for it to be added to DOM
             await this.createRecipeModal();
             
@@ -146,8 +121,7 @@ class RecipeCalculator {
     }
 
     setupEventListeners() {
-        this.addRecipeButton.addEventListener('click', () => this.openRecipeModal());
-
+       
         const modal = document.getElementById('recipe-modal');
         const closeButton = modal.querySelector('.close-button');
         const cancelButton = modal.querySelector('#cancel-recipe');
@@ -338,4 +312,5 @@ class RecipeCalculator {
 }
 
 // Make RecipeCalculator available globally
+
 window.RecipeCalculator = RecipeCalculator;
