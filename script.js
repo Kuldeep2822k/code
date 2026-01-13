@@ -1,4 +1,16 @@
 // Meal Calculator Application
+
+// Utility for XSS prevention
+function escapeHtml(str) {
+    if (!str && str !== 0) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 // USDA Food Database API (free, no key required for basic usage)
 const USDA_API_URL = 'https://api.nal.usda.gov/fdc/v1';
 
@@ -269,7 +281,7 @@ class MealCalculator {
             item.innerHTML = `
                 <div class="food-content">
                     <div class="food-details">
-                <div class="food-name">${food.label}</div>
+                <div class="food-name">${escapeHtml(food.label)}</div>
                 <div class="food-calories">${calories} kcal per 100g</div>
                     </div>
                 </div>
@@ -506,8 +518,8 @@ class MealCalculator {
             itemElement.className = 'meal-item';
             itemElement.innerHTML = `
                 <div class="meal-item-info">
-                    <div class="meal-item-name">${item.name}</div>
-                    <div class="meal-item-details">${item.portion} ${item.unit}</div>
+                    <div class="meal-item-name">${escapeHtml(item.name)}</div>
+                    <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
                 </div>
                 <div class="meal-item-nutrition">
                     <div class="meal-item-calories">${item.calories} kcal</div>
@@ -668,7 +680,7 @@ class MealCalculator {
                 const item = document.createElement('div');
                 item.className = 'breakdown-item';
                 item.innerHTML = `
-                    <div class="breakdown-item-name">${this.formatMealName(mealType)}</div>
+                    <div class="breakdown-item-name">${escapeHtml(this.formatMealName(mealType))}</div>
                     <div class="breakdown-item-calories">${mealCalories} kcal</div>
                 `;
                 chart.appendChild(item);
@@ -1036,7 +1048,7 @@ class MealCalculator {
             const item = document.createElement('div');
             item.className = 'recognized-food-item';
             item.innerHTML = `
-                <div class="food-name">${food.name}</div>
+                <div class="food-name">${escapeHtml(food.name)}</div>
                 <div class="food-confidence">Confidence: ${(food.confidence * 100).toFixed(1)}%</div>
                 <div class="food-nutrition">${food.calories} kcal, ${food.protein}g protein</div>
             `;

@@ -680,8 +680,8 @@ class MealPlansGallery {
             
             planCard.innerHTML = `
                 <div class="meal-plan-header ${headerClass}">
-                    <h3>${plan.name}</h3>
-                    <p>${plan.description}</p>
+                    <h3>${escapeHtml(plan.name)}</h3>
+                    <p>${escapeHtml(plan.description)}</p>
                 </div>
                 <div class="meal-plan-content">
                     <div class="meal-plan-nutrition">
@@ -800,8 +800,8 @@ class MealPlansGallery {
         
         modalBody.innerHTML = `
             <div class="meal-plan-header ${headerClass}">
-                <h3>${plan.name}</h3>
-                <p>${plan.description}</p>
+                <h3>${escapeHtml(plan.name)}</h3>
+                <p>${escapeHtml(plan.description)}</p>
             </div>
             
             <div class="meal-plan-nutrition" style="margin-top: 20px;">
@@ -852,9 +852,9 @@ class MealPlansGallery {
                 const mealItem = document.createElement('div');
                 mealItem.className = 'meal-item';
                 mealItem.innerHTML = `
-                    <div class="meal-item-name">${item.label}</div>
+                    <div class="meal-item-name">${escapeHtml(item.label)}</div>
                     <div class="meal-item-details">
-                        ${item.quantity} ${item.measure} - ${item.calories} cal, 
+                        ${item.quantity} ${escapeHtml(item.measure)} - ${item.calories} cal,
                         P: ${item.protein}g, C: ${item.carbs}g, F: ${item.fats}g
                     </div>
                 `;
