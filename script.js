@@ -1351,13 +1351,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         const mealPlansGallery = new MealPlansGallery();
         await mealPlansGallery.initialize();
         
-        // Show nutrition tab before initializing charts
-        const nutritionTab = document.querySelector('.tab-content[data-tab="nutrition"]');
-        if (nutritionTab) {
-            nutritionTab.style.display = 'block';
-        }
-        
         // Initialize nutrition charts
+        // The charts will handle their own container creation and visibility
         await NutritionCharts.initialize();
         
         // Initialize recipe calculator last
