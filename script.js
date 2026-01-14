@@ -1173,7 +1173,7 @@ class MealCalculator {
 
         try {
             // First try USDA API for barcode search
-            const usdaUrl = `${USDA_API_URL}/foods/search?api_key=DEMO_KEY&query=${code}&pageSize=5&dataType=Foundation,SR Legacy`;
+            const usdaUrl = `${USDA_API_URL}/foods/search?api_key=DEMO_KEY&query=${encodeURIComponent(code)}&pageSize=5&dataType=Foundation,SR Legacy`;
             
             console.log('Searching USDA API for barcode:', code);
             const usdaResponse = await fetch(usdaUrl);
