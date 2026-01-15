@@ -419,15 +419,7 @@ class MealCalculator {
         document.getElementById('nutrition-preview').innerHTML = '';
     }
 
-
-
-    updateNutritionPreview() {
-        if (!this.selectedFood) return;
-
-        const portionSize = parseFloat(document.getElementById('portion-size').value) || 0;
-        const portionUnit = document.getElementById('portion-unit').value;
-        
-        // Convert portion size to grams for calculation
+    convertPortionToGrams(portionSize, portionUnit) {
         let portionInGrams = portionSize;
         if (portionUnit === 'cup') {
             portionInGrams = portionSize * 240; // 1 cup = 240g (approximate)
@@ -443,6 +435,17 @@ class MealCalculator {
             portionInGrams = portionSize * 100; // Assume 1 serving = 100g (approximate)
         }
         // For 'gram', use as is
+        return portionInGrams;
+    }
+
+    updateNutritionPreview() {
+        if (!this.selectedFood) return;
+
+        const portionSize = parseFloat(document.getElementById('portion-size').value) || 0;
+        const portionUnit = document.getElementById('portion-unit').value;
+
+        // Convert portion size to grams for calculation
+        const portionInGrams = this.convertPortionToGrams(portionSize, portionUnit);
         
         // Calculate nutrition per 100g basis
         const multiplier = portionInGrams / 100;
@@ -468,21 +471,7 @@ class MealCalculator {
         const portionUnit = document.getElementById('portion-unit').value;
 
         // Convert portion size to grams for calculation
-        let portionInGrams = portionSize;
-        if (portionUnit === 'cup') {
-            portionInGrams = portionSize * 240; // 1 cup = 240g (approximate)
-        } else if (portionUnit === 'ounce') {
-            portionInGrams = portionSize * 28.35; // 1 oz = 28.35g
-        } else if (portionUnit === 'piece') {
-            portionInGrams = portionSize * 100; // Assume 1 piece = 100g (approximate)
-        } else if (portionUnit === 'tablespoon') {
-            portionInGrams = portionSize * 15; // 1 tbsp = 15g (approximate)
-        } else if (portionUnit === 'teaspoon') {
-            portionInGrams = portionSize * 5; // 1 tsp = 5g (approximate)
-        } else if (portionUnit === 'serving') {
-            portionInGrams = portionSize * 100; // Assume 1 serving = 100g (approximate)
-        }
-        // For 'gram', use as is
+        const portionInGrams = this.convertPortionToGrams(portionSize, portionUnit);
         
         // Calculate nutrition per 100g basis
         const multiplier = portionInGrams / 100;
