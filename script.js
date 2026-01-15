@@ -260,6 +260,12 @@ class MealCalculator {
             return;
         }
 
+        // Security: Prevent DoS/API abuse with excessively long queries
+        if (query.length > 100) {
+            results.innerHTML = '<div class="food-result-item error">Search term too long (max 100 characters)</div>';
+            return;
+        }
+
         // Show loading state
         results.innerHTML = '<div class="food-result-item loading"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
 

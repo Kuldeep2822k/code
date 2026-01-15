@@ -28,7 +28,7 @@ class RecipeCalculator {
                 });
             }
 
-            
+
 
             // Initialize instance if not already initialized
             if (!window.recipeCalculator) {
@@ -46,10 +46,10 @@ class RecipeCalculator {
 
     async init() {
         try {
-           
+
             // Create modal and wait for it to be added to DOM
             await this.createRecipeModal();
-            
+
             // Wait for modal elements to be available
             await new Promise(resolve => {
                 const checkElements = () => {
@@ -63,7 +63,7 @@ class RecipeCalculator {
                 };
                 checkElements();
             });
-            
+
             // Set up event listeners after all elements are created
             this.setupEventListeners();
             return this;
@@ -121,7 +121,7 @@ class RecipeCalculator {
     }
 
     setupEventListeners() {
-       
+
         const modal = document.getElementById('recipe-modal');
         const closeButton = modal.querySelector('.close-button');
         const cancelButton = modal.querySelector('#cancel-recipe');
@@ -194,14 +194,31 @@ class RecipeCalculator {
         const instructions = document.getElementById('recipe-instructions').value.trim();
         const servings = parseInt(document.getElementById('recipe-servings').value);
 
+        // Security: Input Validation to prevent Storage Exhaustion/DoS
         if (!name) {
             alert('Please enter a recipe name');
+            return;
+        }
+        if (name.length > 100) {
+            alert('Recipe name is too long (max 100 characters)');
+            return;
+        }
+        if (description.length > 500) {
+            alert('Description is too long (max 500 characters)');
+            return;
+        }
+        if (instructions.length > 2000) {
+            alert('Instructions are too long (max 2000 characters)');
+            return;
+        }
+        if (isNaN(servings) || servings < 1 || servings > 100) {
+            alert('Servings must be between 1 and 100');
             return;
         }
 
         const ingredients = [];
         const ingredientItems = document.querySelectorAll('.ingredient-item');
-        
+
         for (const item of ingredientItems) {
             const ingredientName = item.querySelector('.ingredient-name').value.trim();
             const amount = parseFloat(item.querySelector('.ingredient-amount').value);
