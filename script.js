@@ -495,6 +495,53 @@ class MealCalculator {
         this.showMessage('Food item added successfully!', 'success');
     }
 
+    /**
+     * Securely adds a food item to the current meal with validation
+     * @param {Object} item - The food item to add
+     * @returns {boolean} - True if added successfully
+     */
+    addFoodItem(item) {
+        if (!this.currentMeal) {
+            this.showMessage('Please select a meal first', 'error');
+            return false;
+        }
+
+        // Security: Input Validation
+        if (!item || typeof item !== 'object') {
+            console.error('Invalid item format');
+            return false;
+        }
+
+        // Validate required fields
+        const requiredFields = ['name', 'calories', 'protein', 'carbs', 'fats', 'portion', 'unit'];
+        for (const field of requiredFields) {
+            if (item[field] === undefined || item[field] === null) {
+                console.error(`Missing field: ${field}`);
+                return false;
+            }
+        }
+
+        // Validate numeric values
+        const numericFields = ['calories', 'protein', 'carbs', 'fats', 'portion'];
+        for (const field of numericFields) {
+            if (typeof item[field] !== 'number' || isNaN(item[field]) || item[field] < 0) {
+                 this.showMessage(`Invalid value for ${field}`, 'error');
+                 return false;
+            }
+        }
+
+        // Ensure ID
+        if (!item.id) {
+            item.id = Date.now().toString();
+        }
+
+        this.meals[this.currentMeal].push(item);
+        this.renderMealItems(this.currentMeal);
+        this.updateNutritionDisplay();
+        this.saveData();
+        return true;
+    }
+
     async renderMealItems(mealType) {
         const container = document.getElementById(`${mealType}-items`);
         if (!container) return;

@@ -310,21 +310,31 @@ class RecipeCalculator {
     addRecipeToMeal(recipe) {
         const currentMeal = window.mealCalculator.currentMeal;
         if (!currentMeal) {
-            alert('Please select a meal first');
+            if (window.mealCalculator.showMessage) {
+                window.mealCalculator.showMessage('Please select a meal first', 'error');
+            } else {
+                alert('Please select a meal first');
+            }
             return;
         }
 
         // Add recipe as a food item
         const recipeItem = {
-            foodId: `recipe-${recipe.id}`,
-            label: `${recipe.name} (Recipe)`,
-            nutrients: recipe.nutrients,
-            measure: '1 serving',
-            quantity: 1
+            id: `recipe-${recipe.id}-${Date.now()}`,
+            name: `${recipe.name} (Recipe)`,
+            portion: 1,
+            unit: 'serving',
+            calories: recipe.nutrients.ENERC_KCAL || 0,
+            protein: recipe.nutrients.PROCNT || 0,
+            carbs: recipe.nutrients.CHOCDF || 0,
+            fats: recipe.nutrients.FAT || 0
         };
 
-        window.mealCalculator.addFoodItem(recipeItem);
-        window.mealCalculator.updateNutritionDisplay();
+        const success = window.mealCalculator.addFoodItem(recipeItem);
+
+        if (success && window.mealCalculator.showMessage) {
+            window.mealCalculator.showMessage('Recipe added to meal!', 'success');
+        }
     }
 }
 
