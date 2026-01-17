@@ -472,8 +472,6 @@ class MealCalculator {
 
         // Convert portion size to grams for calculation
         const portionInGrams = this.convertPortionToGrams(portionSize, portionUnit);
-        
-        // Calculate nutrition per 100g basis
         const multiplier = portionInGrams / 100;
 
         const foodItem = {
@@ -487,12 +485,41 @@ class MealCalculator {
             fats: Math.round(this.selectedFood.fats * multiplier * 10) / 10
         };
 
-        this.meals[this.currentMeal].push(foodItem);
-        this.renderMealItems(this.currentMeal);
-        this.updateNutritionDisplay();
-        this.saveData();
-        this.closeFoodSelector();
-        this.showMessage('Food item added successfully!', 'success');
+        if (this.addFoodItem(foodItem)) {
+            this.closeFoodSelector();
+        }
+    }
+
+    addFoodItem(item, mealType = this.currentMeal) {
+        if (!mealType || !this.meals[mealType] || !item || typeof item !== 'object') return false;
+
+        const getNum = (v) => Math.max(0, parseFloat(v) || 0);
+
+        // Extract nutrients from either nested or flat structure
+        const n = item.nutrients || item;
+        const cal = getNum(n.ENERC_KCAL || n.calories);
+        const pro = getNum(n.PROCNT || n.protein);
+        const carb = getNum(n.CHOCDF || n.carbs);
+        const fat = getNum(n.FAT || n.fats);
+
+        this.meals[mealType].push({
+            id: String(item.foodId || Date.now() + Math.random().toString().slice(2)),
+            name: String(item.name || item.label || 'Unknown').substring(0, 100),
+            portion: getNum(item.quantity || item.portion) || 1,
+            unit: String(item.measure || item.unit || 'serving').substring(0, 20),
+            calories: Math.round(cal),
+            protein: parseFloat(pro.toFixed(1)),
+            carbs: parseFloat(carb.toFixed(1)),
+            fats: parseFloat(fat.toFixed(1))
+        });
+
+        if (typeof document !== 'undefined') {
+            this.renderMealItems(mealType);
+            this.updateNutritionDisplay();
+            this.saveData();
+            this.showMessage('Food item added successfully!', 'success');
+        }
+        return true;
     }
 
     async renderMealItems(mealType) {

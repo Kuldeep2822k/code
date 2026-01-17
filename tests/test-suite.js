@@ -169,3 +169,94 @@ QUnit.module('MealCalculator', function(hooks) {
     assert.strictEqual(mealCalculator.convertPortionToGrams(0, 'cup'), 0, 'Handles zero portion size');
   });
 });
+
+QUnit.module('MealCalculator.addFoodItem', function(hooks) {
+  let mealCalculator;
+
+  hooks.beforeEach(function() {
+    mealCalculator = new MealCalculator();
+    // Mock DOM dependent methods to prevent errors during testing
+    mealCalculator.renderMealItems = function() {};
+    mealCalculator.updateNutritionDisplay = function() {};
+    mealCalculator.saveData = function() {};
+    mealCalculator.showMessage = function() {};
+    mealCalculator.currentMeal = 'breakfast';
+  });
+
+  QUnit.test('addFoodItem adds valid item correctly', function(assert) {
+    const item = {
+      name: 'Test Food',
+      calories: 100,
+      protein: 10,
+      carbs: 20,
+      fats: 5,
+      portion: 1,
+      unit: 'cup'
+    };
+
+    const result = mealCalculator.addFoodItem(item);
+    assert.true(result, 'Returns true for valid item');
+    assert.equal(mealCalculator.meals.breakfast.length, 1, 'Item added to breakfast');
+
+    const added = mealCalculator.meals.breakfast[0];
+    assert.equal(added.name, 'Test Food', 'Name matches');
+    assert.equal(added.calories, 100, 'Calories match');
+  });
+
+  QUnit.test('addFoodItem sanitizes negative values', function(assert) {
+    const item = {
+      name: 'Negative Food',
+      calories: -100,
+      protein: -10,
+      carbs: 20,
+      fats: 5
+    };
+
+    mealCalculator.addFoodItem(item);
+    const added = mealCalculator.meals.breakfast[0];
+
+    assert.equal(added.calories, 0, 'Negative calories become 0');
+    assert.equal(added.protein, 0, 'Negative protein becomes 0');
+    assert.equal(added.carbs, 20, 'Positive values remain');
+  });
+
+  QUnit.test('addFoodItem handles nested nutrients object', function(assert) {
+    const item = {
+      label: 'Nested Food',
+      nutrients: {
+        ENERC_KCAL: 150,
+        PROCNT: 15,
+        CHOCDF: 25,
+        FAT: 6
+      }
+    };
+
+    mealCalculator.addFoodItem(item);
+    const added = mealCalculator.meals.breakfast[0];
+
+    assert.equal(added.name, 'Nested Food', 'Label used as name');
+    assert.equal(added.calories, 150, 'Calories extracted from nutrients');
+    assert.equal(added.protein, 15, 'Protein extracted from nutrients');
+  });
+
+  QUnit.test('addFoodItem limits name length', function(assert) {
+    const longName = 'A'.repeat(150);
+    const item = {
+      name: longName,
+      calories: 100
+    };
+
+    mealCalculator.addFoodItem(item);
+    const added = mealCalculator.meals.breakfast[0];
+
+    assert.equal(added.name.length, 100, 'Name truncated to 100 chars');
+    assert.equal(added.name, 'A'.repeat(100), 'Name matches truncated string');
+  });
+
+  QUnit.test('addFoodItem fails if no meal selected', function(assert) {
+    mealCalculator.currentMeal = '';
+    const result = mealCalculator.addFoodItem({ name: 'Food' });
+    assert.false(result, 'Returns false when no current meal');
+    assert.equal(mealCalculator.meals.breakfast.length, 0, 'No item added');
+  });
+});
