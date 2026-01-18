@@ -464,6 +464,72 @@ class MealCalculator {
         `;
     }
 
+    addFoodItem(item, mealType) {
+        // 1. Input Validation
+        if (!item || typeof item !== 'object') {
+            console.error('Invalid food item: must be an object');
+            return false;
+        }
+
+        const validMealTypes = Object.keys(this.meals);
+        const targetMeal = mealType || this.currentMeal;
+
+        if (!validMealTypes.includes(targetMeal)) {
+            console.error(`Invalid meal type: ${targetMeal}`);
+            return false;
+        }
+
+        // 2. Normalization & Sanitization
+        const name = String(item.name || item.label || 'Unknown Food').slice(0, 100);
+        const portion = parseFloat(item.portion || item.quantity) || 1;
+        const unit = String(item.unit || item.measure || 'serving').slice(0, 20);
+
+        let calories = 0, protein = 0, carbs = 0, fats = 0;
+
+        if (item.nutrients) { // Recipe format
+             calories = item.nutrients.ENERC_KCAL || 0;
+             protein = item.nutrients.PROCNT || 0;
+             carbs = item.nutrients.CHOCDF || 0;
+             fats = item.nutrients.FAT || 0;
+        } else if (item.nutrition) { // Meal plans format
+             calories = item.nutrition.calories || 0;
+             protein = item.nutrition.protein || 0;
+             carbs = item.nutrition.carbs || 0;
+             fats = item.nutrition.fats || 0;
+        } else { // Internal flat format
+             calories = item.calories || 0;
+             protein = item.protein || 0;
+             carbs = item.carbs || 0;
+             fats = item.fats || 0;
+        }
+
+        // Ensure non-negative numbers
+        calories = Math.max(0, parseFloat(calories));
+        protein = Math.max(0, parseFloat(protein));
+        carbs = Math.max(0, parseFloat(carbs));
+        fats = Math.max(0, parseFloat(fats));
+
+        // 3. Create Normalized Item
+        const normalizedItem = {
+            id: item.id || Date.now().toString(),
+            name: name,
+            portion: portion,
+            unit: unit,
+            calories: Math.round(calories),
+            protein: Math.round(protein * 10) / 10,
+            carbs: Math.round(carbs * 10) / 10,
+            fats: Math.round(fats * 10) / 10
+        };
+
+        // 4. Update State
+        this.meals[targetMeal].push(normalizedItem);
+        this.renderMealItems(targetMeal);
+        this.updateNutritionDisplay();
+        this.saveData();
+
+        return true;
+    }
+
     addSelectedFood() {
         if (!this.selectedFood || !this.currentMeal) return;
 
@@ -477,7 +543,6 @@ class MealCalculator {
         const multiplier = portionInGrams / 100;
 
         const foodItem = {
-            id: Date.now().toString(),
             name: this.selectedFood.name,
             portion: portionSize,
             unit: portionUnit,
@@ -487,12 +552,12 @@ class MealCalculator {
             fats: Math.round(this.selectedFood.fats * multiplier * 10) / 10
         };
 
-        this.meals[this.currentMeal].push(foodItem);
-        this.renderMealItems(this.currentMeal);
-        this.updateNutritionDisplay();
-        this.saveData();
-        this.closeFoodSelector();
-        this.showMessage('Food item added successfully!', 'success');
+        if (this.addFoodItem(foodItem, this.currentMeal)) {
+            this.closeFoodSelector();
+            this.showMessage('Food item added successfully!', 'success');
+        } else {
+            this.showMessage('Failed to add food item', 'error');
+        }
     }
 
     async renderMealItems(mealType) {
