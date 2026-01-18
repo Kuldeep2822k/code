@@ -168,4 +168,46 @@ QUnit.module('MealCalculator', function(hooks) {
     assert.strictEqual(mealCalculator.convertPortionToGrams(1, 'serving'), 100, 'serving conversion is correct');
     assert.strictEqual(mealCalculator.convertPortionToGrams(0, 'cup'), 0, 'Handles zero portion size');
   });
+
+  QUnit.test('addFoodItem adds item with validation and normalization', function(assert) {
+    // Mock DOM-dependent methods
+    mealCalculator.renderMealItems = function() {};
+    mealCalculator.updateNutritionDisplay = function() {};
+    mealCalculator.saveData = function() {};
+    mealCalculator.currentMeal = 'breakfast';
+
+    // 1. Test Internal Format
+    const internalItem = { name: 'Test 1', portion: 2, unit: 'cup', calories: 200, protein: 10, carbs: 20, fats: 5 };
+    assert.ok(mealCalculator.addFoodItem(internalItem), 'Returns true for valid internal item');
+    assert.equal(mealCalculator.meals.breakfast.length, 1, 'Adds item to meals');
+    assert.equal(mealCalculator.meals.breakfast[0].calories, 200, 'Preserves calories');
+    assert.equal(mealCalculator.meals.breakfast[0].unit, 'cup', 'Preserves unit');
+
+    // 2. Test Recipe Format
+    const recipeItem = {
+        label: 'Test Recipe',
+        quantity: 1,
+        measure: 'serving',
+        nutrients: { ENERC_KCAL: 500, PROCNT: 30, CHOCDF: 40, FAT: 20 }
+    };
+    assert.ok(mealCalculator.addFoodItem(recipeItem, 'lunch'), 'Returns true for valid recipe item');
+    assert.equal(mealCalculator.meals.lunch.length, 1, 'Adds item to specified meal');
+    assert.equal(mealCalculator.meals.lunch[0].calories, 500, 'Maps ENERC_KCAL to calories');
+    assert.equal(mealCalculator.meals.lunch[0].protein, 30, 'Maps PROCNT to protein');
+
+    // 3. Test Validation
+    assert.notOk(mealCalculator.addFoodItem(null), 'Rejects null');
+    assert.notOk(mealCalculator.addFoodItem({}, 'invalid-meal'), 'Rejects invalid meal type');
+
+    // 4. Test Normalization (negative values, length)
+    const badItem = {
+        name: 'A'.repeat(200),
+        portion: -5,
+        calories: -100
+    };
+    mealCalculator.addFoodItem(badItem, 'dinner');
+    const addedBadItem = mealCalculator.meals.dinner[0];
+    assert.equal(addedBadItem.name.length, 100, 'Truncates name');
+    assert.equal(addedBadItem.calories, 0, 'Clamps negative calories to 0');
+  });
 });
