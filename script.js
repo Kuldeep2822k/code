@@ -271,34 +271,32 @@ class MealCalculator {
 
         const foods = await this.searchFoodsAPI(query);
 
-        results.innerHTML = '';
-
         if (foods.length === 0) {
             results.innerHTML = '<div class="food-result-item">No foods found. Try a different search term.</div>';
             return;
         }
 
-        foods.forEach(food => {
-            const item = document.createElement('div');
-            item.className = 'food-result-item';
-            
+        results.innerHTML = foods.map(food => {
             const calories = food.nutrients.ENERC_KCAL || 0;
-            
-            item.innerHTML = `
-                <div class="food-content">
-                    <div class="food-details">
-                <div class="food-name">${escapeHtml(food.label)}</div>
-                <div class="food-calories">${calories} kcal per 100g</div>
+            return `
+                <div class="food-result-item">
+                    <div class="food-content">
+                        <div class="food-details">
+                            <div class="food-name">${escapeHtml(food.label)}</div>
+                            <div class="food-calories">${calories} kcal per 100g</div>
+                        </div>
                     </div>
                 </div>
             `;
-            
-            item.addEventListener('click', () => this.selectFoodAPI(food));
-            results.appendChild(item);
+        }).join('');
+
+        const foodItems = results.querySelectorAll('.food-result-item');
+        foodItems.forEach((item, index) => {
+            item.addEventListener('click', (event) => this.selectFoodAPI(foods[index], event));
         });
     }
 
-    selectFoodAPI(food) {
+    selectFoodAPI(food, event) {
         this.selectedFood = {
             key: food.foodId || food.uri,
             name: food.label,
