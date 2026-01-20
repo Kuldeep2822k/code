@@ -546,7 +546,7 @@ class MealCalculator {
 
         await new Promise(resolve => {
             requestAnimationFrame(() => {
-        container.innerHTML = '';
+                container.innerHTML = '';
                 resolve();
             });
         });
@@ -554,9 +554,9 @@ class MealCalculator {
         await Promise.all(this.meals[mealType].map(async item => {
             await new Promise(resolve => {
                 requestAnimationFrame(() => {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'meal-item';
-            itemElement.innerHTML = `
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'meal-item';
+                    itemElement.innerHTML = `
                 <div class="meal-item-info">
                     <div class="meal-item-name">${escapeHtml(item.name)}</div>
                     <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
@@ -565,13 +565,20 @@ class MealCalculator {
                     <div class="meal-item-calories">${item.calories} kcal</div>
                     <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
                 </div>
-                <button class="remove-item-btn" onclick="mealCalculator.removeItem('${mealType}', '${item.id}')">
+                <button class="remove-item-btn">
                     <i class="fas fa-times"></i>
                 </button>
             `;
-            container.appendChild(itemElement);
+
+                    // Securely attach event listener instead of using inline onclick
+                    const removeBtn = itemElement.querySelector('.remove-item-btn');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
+                    }
+
+                    container.appendChild(itemElement);
                     resolve();
-        });
+                });
             });
         }));
     }
