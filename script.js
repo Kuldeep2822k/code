@@ -565,10 +565,16 @@ class MealCalculator {
                     <div class="meal-item-calories">${item.calories} kcal</div>
                     <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
                 </div>
-                <button class="remove-item-btn" onclick="mealCalculator.removeItem('${mealType}', '${item.id}')">
+                <button class="remove-item-btn" aria-label="Remove item">
                     <i class="fas fa-times"></i>
                 </button>
             `;
+
+            const removeBtn = itemElement.querySelector('.remove-item-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
+            }
+
             container.appendChild(itemElement);
                     resolve();
         });
