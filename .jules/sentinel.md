@@ -7,3 +7,8 @@
 **Vulnerability:** The use of `onclick` attributes in `innerHTML` strings (e.g., `onclick="mealCalculator.removeItem('${item.id}')"`) creates an XSS vulnerability if the interpolated variables are controlled by an attacker.
 **Learning:** Even with escaping, inline event handlers are risky and violate CSP best practices.
 **Prevention:** Always attach event listeners programmatically using `addEventListener` after creating elements, which also keeps the data in the closure scope rather than exposing it in the HTML.
+
+## 2025-05-24 - Stored XSS in LocalStorage Data
+**Vulnerability:** Meal items loaded from `localStorage` were rendered with `innerHTML` without escaping numeric fields like `portion` and `calories`. An attacker could inject malicious HTML strings into `localStorage`, which would then be executed.
+**Learning:** Data from `localStorage` is untrusted and loosely typed; fields expected to be numbers can be strings.
+**Prevention:** Escape ALL interpolated variables in HTML templates, regardless of their expected type.
