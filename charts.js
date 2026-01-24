@@ -522,7 +522,9 @@
 
                     // Calculate total calories for this meal
                     const calories = mealItems.reduce((total, item) => {
-                        return total + (item.nutrition.calories || 0);
+                        // Handle both standard format (flat properties) and legacy format (nested nutrition)
+                        const itemCalories = item.calories || (item.nutrition && item.nutrition.calories) || 0;
+                        return total + itemCalories;
                     }, 0);
 
                     mealCalories.push(calories);

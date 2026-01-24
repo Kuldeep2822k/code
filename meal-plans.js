@@ -364,36 +364,8 @@ class MealPlansGallery {
             checkContainer();
         });
         
-        // Create gallery tab content
-        await new Promise(resolve => {
-            const checkContainer = () => {
-                const container = document.querySelector('.container');
-                if (container) {
-                    const galleryTab = document.createElement('div');
-                    galleryTab.className = 'tab-content';
-                    galleryTab.id = 'meal-plans';
-                    
-                    // Add header
-                    galleryTab.innerHTML = `
-                        <div class="gallery-header">
-                            <h2>Sample Meal Plans</h2>
-                            <p>Browse and load these pre-made meal plans for quick demos</p>
-                        </div>
-                        <div class="meal-plans-grid"></div>
-                    `;
-                    
-                    container.appendChild(galleryTab);
-                    resolve();
-                } else {
-                    requestAnimationFrame(checkContainer);
-                }
-            };
-            checkContainer();
-        });
-        
         // Populate meal plans
         await this.populateMealPlans();
-        }
         
         // Add styles
         const styleElement = document.createElement('style');
@@ -666,55 +638,61 @@ class MealPlansGallery {
                 if (mealPlansGrid) {
                     mealPlansGrid.innerHTML = '';
                     this.mealPlans.forEach(plan => {
-            // Determine header class based on tags
-            let headerClass = '';
-            if (plan.tags.includes('vegetarian')) headerClass = 'vegetarian';
-            if (plan.tags.includes('non-vegetarian')) headerClass = 'non-vegetarian';
-            if (plan.tags.includes('keto')) headerClass = 'keto';
-            if (plan.tags.includes('vegan')) headerClass = 'vegan';
-            if (plan.tags.includes('diabetic-friendly')) headerClass = 'diabetic';
-            
-            const planCard = document.createElement('div');
-            planCard.className = 'meal-plan-card';
-            planCard.setAttribute('data-plan-id', plan.id);
-            
-            planCard.innerHTML = `
-                <div class="meal-plan-header ${headerClass}">
-                    <h3>${escapeHtml(plan.name)}</h3>
-                    <p>${escapeHtml(plan.description)}</p>
-                </div>
-                <div class="meal-plan-content">
-                    <div class="meal-plan-nutrition">
-                        <div class="nutrition-item">
-                            <span class="nutrition-value">${plan.calories}</span>
-                            <span class="nutrition-label">Calories</span>
-                        </div>
-                        <div class="nutrition-item">
-                            <span class="nutrition-value">${plan.protein}g</span>
-                            <span class="nutrition-label">Protein</span>
-                        </div>
-                        <div class="nutrition-item">
-                            <span class="nutrition-value">${plan.carbs}g</span>
-                            <span class="nutrition-label">Carbs</span>
-                        </div>
-                        <div class="nutrition-item">
-                            <span class="nutrition-value">${plan.fat}g</span>
-                            <span class="nutrition-label">Fat</span>
-                        </div>
-                    </div>
-                    <div class="meal-plan-tags">
-                        ${plan.tags.map(tag => `<span class="meal-tag">${tag}</span>`).join('')}
-                    </div>
-                    <div class="meal-plan-actions">
-                        <button class="load-plan-btn" data-action="view" data-plan-id="${plan.id}">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            mealPlansGrid.appendChild(planCard);
-            resolve();
+                        // Determine header class based on tags
+                        let headerClass = '';
+                        if (plan.tags.includes('vegetarian')) headerClass = 'vegetarian';
+                        if (plan.tags.includes('non-vegetarian')) headerClass = 'non-vegetarian';
+                        if (plan.tags.includes('keto')) headerClass = 'keto';
+                        if (plan.tags.includes('vegan')) headerClass = 'vegan';
+                        if (plan.tags.includes('diabetic-friendly')) headerClass = 'diabetic';
+
+                        const planCard = document.createElement('div');
+                        planCard.className = 'meal-plan-card';
+                        planCard.setAttribute('data-plan-id', plan.id);
+
+                        planCard.innerHTML = `
+                            <div class="meal-plan-header ${headerClass}">
+                                <h3>${escapeHtml(plan.name)}</h3>
+                                <p>${escapeHtml(plan.description)}</p>
+                            </div>
+                            <div class="meal-plan-content">
+                                <div class="meal-plan-nutrition">
+                                    <div class="nutrition-item">
+                                        <span class="nutrition-value">${plan.calories}</span>
+                                        <span class="nutrition-label">Calories</span>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <span class="nutrition-value">${plan.protein}g</span>
+                                        <span class="nutrition-label">Protein</span>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <span class="nutrition-value">${plan.carbs}g</span>
+                                        <span class="nutrition-label">Carbs</span>
+                                    </div>
+                                    <div class="nutrition-item">
+                                        <span class="nutrition-value">${plan.fat}g</span>
+                                        <span class="nutrition-label">Fat</span>
+                                    </div>
+                                </div>
+                                <div class="meal-plan-tags">
+                                    ${plan.tags.map(tag => `<span class="meal-tag">${tag}</span>`).join('')}
+                                </div>
+                                <div class="meal-plan-actions">
+                                    <button class="load-plan-btn" data-action="view" data-plan-id="${plan.id}">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                        mealPlansGrid.appendChild(planCard);
+                    });
+                    resolve();
+                } else {
+                    requestAnimationFrame(checkGrid);
+                }
+            };
+            checkGrid();
         });
         
         // Create modal for meal plan details
@@ -907,31 +885,32 @@ class MealPlansGallery {
         
         // Load new meal plan
         Object.entries(plan.meals).forEach(([mealType, items]) => {
+            // Set current meal context for validation
+            window.mealCalculator.currentMeal = mealType;
+
             items.forEach(item => {
-                // Convert to the format expected by the meal calculator
+                // Security: Transform to standard format and validate via addFoodItem
                 const foodItem = {
-                    label: item.label,
-                    quantity: item.quantity,
-                    measure: item.measure,
-                    nutrition: {
-                        calories: item.calories,
-                        protein: item.protein,
-                        carbs: item.carbs,
-                        fats: item.fats
-                    }
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    name: item.label,
+                    portion: typeof item.quantity === 'number' ? item.quantity : parseFloat(item.quantity) || 1,
+                    unit: item.measure,
+                    calories: item.calories || 0,
+                    protein: item.protein || 0,
+                    carbs: item.carbs || 0,
+                    fats: item.fats || 0
                 };
                 
-                window.mealCalculator.meals[mealType].push(foodItem);
+                // Use the secure method to add item which performs validation
+                window.mealCalculator.addFoodItem(foodItem);
             });
         });
         
+        // Reset current meal
+        window.mealCalculator.currentMeal = '';
+
         // Update nutrition display
         window.mealCalculator.updateNutritionDisplay();
-        
-        // Update meal displays
-        Object.keys(window.mealCalculator.meals).forEach(mealType => {
-            window.mealCalculator.renderMealItems(mealType);
-        });
         
         // Close modal
         this.closeMealPlanModal();
