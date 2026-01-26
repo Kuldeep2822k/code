@@ -559,11 +559,11 @@ class MealCalculator {
             itemElement.innerHTML = `
                 <div class="meal-item-info">
                     <div class="meal-item-name">${escapeHtml(item.name)}</div>
-                    <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
+                    <div class="meal-item-details">${escapeHtml(item.portion)} ${escapeHtml(item.unit)}</div>
                 </div>
                 <div class="meal-item-nutrition">
-                    <div class="meal-item-calories">${item.calories} kcal</div>
-                    <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
+                    <div class="meal-item-calories">${escapeHtml(item.calories)} kcal</div>
+                    <div>P: ${escapeHtml(item.protein)}g | C: ${escapeHtml(item.carbs)}g | F: ${escapeHtml(item.fats)}g</div>
                 </div>
                 <button class="remove-item-btn" aria-label="Remove item">
                     <i class="fas fa-times"></i>

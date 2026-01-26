@@ -907,24 +907,29 @@ class MealPlansGallery {
         
         // Load new meal plan
         Object.entries(plan.meals).forEach(([mealType, items]) => {
+            // Set current meal type for addFoodItem validation
+            window.mealCalculator.currentMeal = mealType;
+
             items.forEach(item => {
-                // Convert to the format expected by the meal calculator
+                // Convert to the format expected by the meal calculator (flat structure)
                 const foodItem = {
-                    label: item.label,
-                    quantity: item.quantity,
-                    measure: item.measure,
-                    nutrition: {
-                        calories: item.calories,
-                        protein: item.protein,
-                        carbs: item.carbs,
-                        fats: item.fats
-                    }
+                    name: item.label,
+                    portion: item.quantity,
+                    unit: item.measure,
+                    calories: item.calories,
+                    protein: item.protein,
+                    carbs: item.carbs,
+                    fats: item.fats
                 };
                 
-                window.mealCalculator.meals[mealType].push(foodItem);
+                // Use addFoodItem to ensure validation and ID generation
+                window.mealCalculator.addFoodItem(foodItem);
             });
         });
         
+        // Reset current meal
+        window.mealCalculator.currentMeal = '';
+
         // Update nutrition display
         window.mealCalculator.updateNutritionDisplay();
         
