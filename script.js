@@ -454,11 +454,11 @@ class MealCalculator {
 
         const preview = document.getElementById('nutrition-preview');
         preview.innerHTML = `
-            <strong>Nutrition Preview (${portionSize} ${portionUnit}):</strong><br>
-            Calories: ${calories} kcal<br>
-            Protein: ${protein}g<br>
-            Carbohydrates: ${carbs}g<br>
-            Fats: ${fats}g
+            <strong>Nutrition Preview (${escapeHtml(portionSize)} ${escapeHtml(portionUnit)}):</strong><br>
+            Calories: ${escapeHtml(calories)} kcal<br>
+            Protein: ${escapeHtml(protein)}g<br>
+            Carbohydrates: ${escapeHtml(carbs)}g<br>
+            Fats: ${escapeHtml(fats)}g
         `;
     }
 
@@ -559,11 +559,11 @@ class MealCalculator {
             itemElement.innerHTML = `
                 <div class="meal-item-info">
                     <div class="meal-item-name">${escapeHtml(item.name)}</div>
-                    <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
+                    <div class="meal-item-details">${escapeHtml(item.portion)} ${escapeHtml(item.unit)}</div>
                 </div>
                 <div class="meal-item-nutrition">
-                    <div class="meal-item-calories">${item.calories} kcal</div>
-                    <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
+                    <div class="meal-item-calories">${escapeHtml(item.calories)} kcal</div>
+                    <div>P: ${escapeHtml(item.protein)}g | C: ${escapeHtml(item.carbs)}g | F: ${escapeHtml(item.fats)}g</div>
                 </div>
                 <button class="remove-item-btn" aria-label="Remove item">
                     <i class="fas fa-times"></i>
@@ -727,7 +727,7 @@ class MealCalculator {
                 item.className = 'breakdown-item';
                 item.innerHTML = `
                     <div class="breakdown-item-name">${escapeHtml(this.formatMealName(mealType))}</div>
-                    <div class="breakdown-item-calories">${mealCalories} kcal</div>
+                    <div class="breakdown-item-calories">${escapeHtml(mealCalories)} kcal</div>
                 `;
                 chart.appendChild(item);
                         resolve();
