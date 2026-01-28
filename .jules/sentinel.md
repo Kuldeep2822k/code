@@ -7,3 +7,8 @@
 **Vulnerability:** The use of `onclick` attributes in `innerHTML` strings (e.g., `onclick="mealCalculator.removeItem('${item.id}')"`) creates an XSS vulnerability if the interpolated variables are controlled by an attacker.
 **Learning:** Even with escaping, inline event handlers are risky and violate CSP best practices.
 **Prevention:** Always attach event listeners programmatically using `addEventListener` after creating elements, which also keeps the data in the closure scope rather than exposing it in the HTML.
+
+## 2025-05-24 - LocalStorage Trust Boundary
+**Vulnerability:** `script.js` blindly loaded data from `localStorage` (`loadStoredData`) and rendered it using `innerHTML` without full output encoding, assuming stored data was valid/safe numeric types.
+**Learning:** `localStorage` is an untrusted input source (Stored XSS vector). Even "numeric" fields in JSON can be manipulated to contain strings with scripts.
+**Prevention:** Treat all data from `localStorage` as hostile. Apply output encoding (`escapeHtml`) to ALL variables interpolated into HTML, regardless of their expected type.
