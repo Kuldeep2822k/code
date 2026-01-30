@@ -91,7 +91,7 @@
                 <div class="meal-section">
                     <h3><i class="fas fa-sun"></i> Breakfast</h3>
                     <div class="meal-items" id="breakfast-items"></div>
-                    <button class="add-item-btn" onclick="showFoodSelector('breakfast')">
+                    <button class="add-item-btn" data-meal="breakfast">
                         <i class="fas fa-plus"></i> Add Food Item
                     </button>
                 </div>
@@ -100,7 +100,7 @@
                 <div class="meal-section">
                     <h3><i class="fas fa-coffee"></i> Morning Snack</h3>
                     <div class="meal-items" id="morning-snack-items"></div>
-                    <button class="add-item-btn" onclick="showFoodSelector('morning-snack')">
+                    <button class="add-item-btn" data-meal="morning-snack">
                         <i class="fas fa-plus"></i> Add Food Item
                     </button>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="meal-section">
                     <h3><i class="fas fa-cloud-sun"></i> Lunch</h3>
                     <div class="meal-items" id="lunch-items"></div>
-                    <button class="add-item-btn" onclick="showFoodSelector('lunch')">
+                    <button class="add-item-btn" data-meal="lunch">
                         <i class="fas fa-plus"></i> Add Food Item
                     </button>
                 </div>
@@ -118,7 +118,7 @@
                 <div class="meal-section">
                     <h3><i class="fas fa-cookie-bite"></i> Afternoon Snack</h3>
                     <div class="meal-items" id="afternoon-snack-items"></div>
-                    <button class="add-item-btn" onclick="showFoodSelector('afternoon-snack')">
+                    <button class="add-item-btn" data-meal="afternoon-snack">
                         <i class="fas fa-plus"></i> Add Food Item
                     </button>
                 </div>
@@ -127,7 +127,7 @@
                 <div class="meal-section">
                     <h3><i class="fas fa-moon"></i> Dinner</h3>
                     <div class="meal-items" id="dinner-items"></div>
-                    <button class="add-item-btn" onclick="showFoodSelector('dinner')">
+                    <button class="add-item-btn" data-meal="dinner">
                         <i class="fas fa-plus"></i> Add Food Item
                     </button>
                 </div>
@@ -136,7 +136,7 @@
                 <div class="meal-section">
                     <h3><i class="fas fa-star"></i> Evening Snack</h3>
                     <div class="meal-items" id="evening-snack-items"></div>
-                    <button class="add-item-btn" onclick="showFoodSelector('evening-snack')">
+                    <button class="add-item-btn" data-meal="evening-snack">
                         <i class="fas fa-plus"></i> Add Food Item
                     </button>
                 </div>
@@ -232,7 +232,7 @@
                         <input type="number" id="goal-fats" value="67" min="30" max="150">
                         <span>g</span>
                     </div>
-                    <button class="save-goals-btn" onclick="saveGoals()">
+                    <button class="save-goals-btn">
                         <i class="fas fa-save"></i> Save Goals
                     </button>
                 </div>
@@ -240,10 +240,10 @@
                 <div class="quick-goals">
                     <h4>Quick Goal Presets</h4>
                     <div class="preset-buttons">
-                        <button class="preset-btn" onclick="setPreset('weight-loss')">Weight Loss</button>
-                        <button class="preset-btn" onclick="setPreset('maintenance')">Maintenance</button>
-                        <button class="preset-btn" onclick="setPreset('muscle-gain')">Muscle Gain</button>
-                        <button class="preset-btn" onclick="setPreset('athletic')">Athletic</button>
+                        <button class="preset-btn" data-preset="weight-loss">Weight Loss</button>
+                        <button class="preset-btn" data-preset="maintenance">Maintenance</button>
+                        <button class="preset-btn" data-preset="muscle-gain">Muscle Gain</button>
+                        <button class="preset-btn" data-preset="athletic">Athletic</button>
                     </div>
                 </div>
             </div>
@@ -255,14 +255,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Add Food Item</h3>
-                <span class="close-btn" onclick="closeFoodSelector()">&times;</span>
+                <span class="close-btn">&times;</span>
             </div>
             <div class="modal-body">
                 <div class="search-section">
                     <div class="search-controls">
-                        <input type="text" id="food-search" placeholder="Search for food..." oninput="searchFoods()">
+                        <input type="text" id="food-search" placeholder="Search for food...">
                         
-                        <button class="camera-btn" onclick="openImageCapture()" title="Capture food image">
+                        <button class="camera-btn" title="Capture food image">
                             <i class="fas fa-camera"></i>
                         </button>
                     </div>
@@ -296,8 +296,8 @@
                     <div class="nutrition-preview" id="nutrition-preview"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="cancel-btn" onclick="closeFoodSelector()">Cancel</button>
-                    <button class="add-food-btn" onclick="addSelectedFood()">Add Food</button>
+                    <button class="cancel-btn">Cancel</button>
+                    <button class="add-food-btn">Add Food</button>
                 </div>
             </div>
         </div>
@@ -307,16 +307,16 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <button class="action-btn clear-all" onclick="clearAllMeals()">
+        <button class="action-btn clear-all">
             <i class="fas fa-trash"></i> Clear All
         </button>
-        <button class="action-btn save-plan" onclick="saveMealPlan()">
+        <button class="action-btn save-plan">
             <i class="fas fa-save"></i> Save Plan
         </button>
-        <button class="action-btn export-plan" onclick="exportMealPlan()">
+        <button class="action-btn export-plan">
             <i class="fas fa-download"></i> Export
         </button>
-        <button class="action-btn create-recipe" onclick="recipeCalculator.openModal()">
+        <button class="action-btn create-recipe">
             <i class="fas fa-utensils"></i> Create Recipe
         </button>
     </div>
@@ -360,51 +360,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-search"></i> Recognized Foods</h3>
-                <span class="close-btn" onclick="document.getElementById('recognized-foods-modal').style.display='none'">&times;</span>
+                <span class="close-btn">&times;</span>
             </div>
             <div class="modal-body">
                 <div id="recognized-foods"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recipe Calculator Modal -->
-    <div id="recipe-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Create Recipe</h3>
-                <span class="close-btn" onclick="recipeCalculator.closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form class="recipe-form" onsubmit="recipeCalculator.saveRecipe(event)">
-                    <div>
-                        <label for="recipe-name">Recipe Name:</label>
-                        <input type="text" id="recipe-name" required>
-                    </div>
-                    
-                    <div>
-                        <label for="recipe-description">Description:</label>
-                        <textarea id="recipe-description" rows="3"></textarea>
-                    </div>
-                    
-                    <div class="recipe-servings">
-                        <label for="recipe-servings">Servings:</label>
-                        <input type="number" id="recipe-servings" value="1" min="1" required>
-                    </div>
-                    
-                    <div>
-                        <label>Ingredients:</label>
-                        <div id="ingredients-list"></div>
-                        <button type="button" class="add-btn" onclick="recipeCalculator.addIngredientField()">
-                            <i class="fas fa-plus"></i> Add Ingredient
-                        </button>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="cancel-btn" onclick="recipeCalculator.closeModal()">Cancel</button>
-                        <button type="submit" class="save-btn">Save Recipe</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
