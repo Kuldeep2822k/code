@@ -393,7 +393,6 @@ class MealPlansGallery {
         
         // Populate meal plans
         await this.populateMealPlans();
-        }
         
         // Add styles
         const styleElement = document.createElement('style');
@@ -714,11 +713,17 @@ class MealPlansGallery {
             `;
             
             mealPlansGrid.appendChild(planCard);
-            resolve();
         });
         
         // Create modal for meal plan details
         this.createMealPlanModal();
+        resolve();
+                } else {
+                    requestAnimationFrame(checkGrid);
+                }
+            };
+            checkGrid();
+        });
     }
     
     /**

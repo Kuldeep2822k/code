@@ -350,34 +350,132 @@ class MealCalculator {
             });
         });
 
-        // Food search with debouncing
-        let searchTimeout;
-        document.getElementById('food-search').addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                this.searchFoods(e.target.value);
-            }, 300);
-        });
-
-        // Portion size changes
-        document.getElementById('portion-size').addEventListener('input', () => {
-            this.updateNutritionPreview();
-        });
-        document.getElementById('portion-unit').addEventListener('change', () => {
-            this.updateNutritionPreview();
-        });
-
-        // Goal inputs
-        ['goal-calories', 'goal-protein', 'goal-carbs', 'goal-fats'].forEach(id => {
-            document.getElementById(id).addEventListener('change', () => {
-                this.updateDailyGoals();
+        // Add Food Item buttons
+        document.querySelectorAll('.add-item-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const meal = e.currentTarget.dataset.meal;
+                if (meal) {
+                    this.showFoodSelector(meal);
+                }
             });
         });
 
+        // Save Goals button
+        const saveGoalsBtn = document.querySelector('.save-goals-btn');
+        if (saveGoalsBtn) {
+            saveGoalsBtn.addEventListener('click', () => this.saveGoals());
+        }
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const preset = e.currentTarget.dataset.preset;
+                if (preset) {
+                    this.setPreset(preset);
+                }
+            });
+        });
+
+        // Action buttons
+        const clearAllBtn = document.querySelector('.action-btn.clear-all');
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', () => this.clearAllMeals());
+        }
+
+        const savePlanBtn = document.querySelector('.action-btn.save-plan');
+        if (savePlanBtn) {
+            savePlanBtn.addEventListener('click', () => this.saveMealPlan());
+        }
+
+        const exportPlanBtn = document.querySelector('.action-btn.export-plan');
+        if (exportPlanBtn) {
+            exportPlanBtn.addEventListener('click', () => this.exportMealPlan());
+        }
+
+        const createRecipeBtn = document.querySelector('.action-btn.create-recipe');
+        if (createRecipeBtn) {
+            createRecipeBtn.addEventListener('click', () => {
+                if (window.recipeCalculator) {
+                    window.recipeCalculator.openRecipeModal();
+                } else {
+                    console.error('Recipe Calculator not initialized');
+                }
+            });
+        }
+
+        // Food Selector Modal Buttons
+        const foodSelectorModal = document.getElementById('food-selector-modal');
+        if (foodSelectorModal) {
+            const closeBtn = foodSelectorModal.querySelector('.close-btn');
+            if (closeBtn) closeBtn.addEventListener('click', () => this.closeFoodSelector());
+
+            const cancelBtn = foodSelectorModal.querySelector('.cancel-btn');
+            if (cancelBtn) cancelBtn.addEventListener('click', () => this.closeFoodSelector());
+
+            const addFoodBtn = foodSelectorModal.querySelector('.add-food-btn');
+            if (addFoodBtn) addFoodBtn.addEventListener('click', () => this.addSelectedFood());
+
+            const cameraBtn = foodSelectorModal.querySelector('.camera-btn');
+            if (cameraBtn) cameraBtn.addEventListener('click', () => this.openImageCapture());
+        }
+
+        // Recognized Foods Modal Buttons
+        const recognizedFoodsModal = document.getElementById('recognized-foods-modal');
+        if (recognizedFoodsModal) {
+            const closeBtn = recognizedFoodsModal.querySelector('.close-btn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    recognizedFoodsModal.style.display = 'none';
+                });
+            }
+        }
+
+        // Food search with debouncing
+        let searchTimeout;
+        const foodSearch = document.getElementById('food-search');
+        if (foodSearch) {
+            foodSearch.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    this.searchFoods(e.target.value);
+                }, 300);
+            });
+        }
+
+        // Portion size changes
+        const portionSize = document.getElementById('portion-size');
+        if (portionSize) {
+            portionSize.addEventListener('input', () => {
+                this.updateNutritionPreview();
+            });
+        }
+
+        const portionUnit = document.getElementById('portion-unit');
+        if (portionUnit) {
+            portionUnit.addEventListener('change', () => {
+                this.updateNutritionPreview();
+            });
+        }
+
+        // Goal inputs
+        ['goal-calories', 'goal-protein', 'goal-carbs', 'goal-fats'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    this.updateDailyGoals();
+                });
+            }
+        });
+
         // Image capture buttons
-        document.getElementById('capture-image-btn').addEventListener('click', () => this.captureImage());
-        document.getElementById('close-image-capture-btn').addEventListener('click', () => this.closeImageCapture());
-        document.getElementById('retake-image-btn').addEventListener('click', () => this.retakeImage());
+        const captureImageBtn = document.getElementById('capture-image-btn');
+        if (captureImageBtn) captureImageBtn.addEventListener('click', () => this.captureImage());
+
+        const closeImageCaptureBtn = document.getElementById('close-image-capture-btn');
+        if (closeImageCaptureBtn) closeImageCaptureBtn.addEventListener('click', () => this.closeImageCapture());
+
+        const retakeImageBtn = document.getElementById('retake-image-btn');
+        if (retakeImageBtn) retakeImageBtn.addEventListener('click', () => this.retakeImage());
     }
 
     async switchTab(tabName) {
@@ -1326,78 +1424,6 @@ class MealCalculator {
 // Global functions for HTML onclick handlers
 window.mealCalculator = null;
 
-function showFoodSelector(mealType) {
-    mealCalculator.showFoodSelector(mealType);
-}
-
-function closeFoodSelector() {
-    mealCalculator.closeFoodSelector();
-}
-
-function searchFoods() {
-    const query = document.getElementById('food-search').value;
-    mealCalculator.searchFoods(query);
-}
-
-function addSelectedFood() {
-    mealCalculator.addSelectedFood();
-}
-
-function saveGoals() {
-    mealCalculator.saveGoals();
-}
-
-function setPreset(presetType) {
-    mealCalculator.setPreset(presetType);
-}
-
-function clearAllMeals() {
-    mealCalculator.clearAllMeals();
-}
-
-function saveMealPlan() {
-    mealCalculator.saveMealPlan();
-}
-
-function exportMealPlan() {
-    mealCalculator.exportMealPlan();
-}
-
-function openBarcodeScanner() {
-    mealCalculator.openBarcodeScanner();
-}
-
-function closeBarcodeScanner() {
-    mealCalculator.closeBarcodeScanner();
-}
-
-function toggleCamera() {
-    mealCalculator.toggleCamera();
-}
-
-function manualBarcodeEntry() {
-    mealCalculator.manualBarcodeEntry();
-}
-
-function closeManualBarcode() {
-    mealCalculator.closeManualBarcode();
-}
-
-async function searchByBarcode() {
-    const code = document.getElementById('barcode-input').value.trim();
-    if (code) {
-        await mealCalculator.searchByBarcode(code);
-    }
-}
-
-function openImageCapture() {
-    mealCalculator.openImageCapture();
-}
-
-function closeImageCapture() {
-    mealCalculator.closeImageCapture();
-}
-
 // Initialize the application when DOM is loaded
 document.addEventListener('DOMContentLoaded', async function() {
     try {
@@ -1441,13 +1467,17 @@ document.addEventListener('keydown', function(e) {
     // Escape key to close modal
     if (e.key === 'Escape') {
         if (document.getElementById('food-selector-modal').style.display === 'block') {
-            mealCalculator.closeFoodSelector();
+            if (window.mealCalculator) {
+                window.mealCalculator.closeFoodSelector();
+            }
         }
     }
     
     // Ctrl/Cmd + S to save meal plan
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        mealCalculator.saveMealPlan();
+        if (window.mealCalculator) {
+            window.mealCalculator.saveMealPlan();
+        }
     }
 });
