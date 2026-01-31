@@ -78,6 +78,222 @@ class MealPlansGallery {
                 font-size: 14px;
                 color: #555;
             }
+
+            .meal-plan-header {
+                padding: 20px;
+                background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
+                color: white;
+            }
+
+            .meal-plan-header.vegetarian {
+                background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+            }
+
+            .meal-plan-header.non-vegetarian {
+                background: linear-gradient(135deg, #F44336 0%, #FF9800 100%);
+            }
+
+            .meal-plan-header.keto {
+                background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
+            }
+
+            .meal-plan-header.vegan {
+                background: linear-gradient(135deg, #009688 0%, #4CAF50 100%);
+            }
+
+            .meal-plan-header.diabetic {
+                background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
+            }
+
+            .meal-plan-header h3 {
+                margin: 0 0 10px 0;
+                font-size: 1.4rem;
+            }
+
+            .meal-plan-header p {
+                margin: 0;
+                opacity: 0.9;
+                font-size: 0.9rem;
+            }
+
+            .meal-plan-content {
+                padding: 20px;
+            }
+
+            .meal-plan-nutrition {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .nutrition-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: #f8f9fa;
+                padding: 10px;
+                border-radius: 5px;
+            }
+
+            .nutrition-value {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #4a5568;
+            }
+
+            .nutrition-label {
+                font-size: 0.8rem;
+                color: #718096;
+            }
+
+            .meal-plan-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                margin-bottom: 15px;
+            }
+
+            .meal-tag {
+                background-color: #e2e8f0;
+                color: #4a5568;
+                font-size: 0.8rem;
+                padding: 3px 8px;
+                border-radius: 15px;
+            }
+
+            .meal-plan-actions {
+                display: flex;
+                justify-content: center;
+                margin-top: 15px;
+            }
+
+            .load-plan-btn {
+                background-color: #4a5568;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+            .load-plan-btn:hover {
+                background-color: #2d3748;
+            }
+
+            /* Modal styles */
+            .meal-plan-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                overflow-y: auto;
+            }
+
+            .meal-plan-modal-content {
+                background-color: white;
+                margin: 50px auto;
+                padding: 30px;
+                border-radius: 10px;
+                max-width: 800px;
+                position: relative;
+            }
+
+            .close-modal {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                font-size: 1.5rem;
+                cursor: pointer;
+                color: #718096;
+            }
+
+            .meal-details-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-top: 20px;
+            }
+
+            .meal-detail-section {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+            }
+
+            .meal-detail-section h4 {
+                margin-top: 0;
+                margin-bottom: 10px;
+                color: #4a5568;
+                font-size: 1.1rem;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 5px;
+            }
+
+            .meal-item {
+                margin-bottom: 8px;
+                font-size: 0.9rem;
+            }
+
+            .meal-item-name {
+                font-weight: 500;
+            }
+
+            .meal-item-details {
+                color: #718096;
+                font-size: 0.8rem;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            .modal-btn {
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                border: none;
+            }
+
+            .load-btn {
+                background-color: #4CAF50;
+                color: white;
+            }
+
+            .load-btn:hover {
+                background-color: #388E3C;
+            }
+
+            .cancel-btn {
+                background-color: #e2e8f0;
+                color: #4a5568;
+            }
+
+            .cancel-btn:hover {
+                background-color: #cbd5e0;
+            }
+
+            @media (max-width: 768px) {
+                .meal-plan-modal-content {
+                    margin: 20px;
+                    padding: 20px;
+                }
+
+                .meal-details-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
         `;
         document.head.appendChild(style);
 
@@ -393,269 +609,8 @@ class MealPlansGallery {
         
         // Populate meal plans
         await this.populateMealPlans();
-        }
-        
-        // Add styles
-        const styleElement = document.createElement('style');
-        styleElement.textContent = `
-            .meal-plans-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 20px;
-                margin-top: 20px;
-            }
-            
-            .meal-plan-card {
-                background-color: white;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-                overflow: hidden;
-                transition: all 0.3s ease;
-            }
-            
-            .meal-plan-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            }
-            
-            .meal-plan-header {
-                padding: 20px;
-                background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
-                color: white;
-            }
-            
-            .meal-plan-header.vegetarian {
-                background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
-            }
-            
-            .meal-plan-header.non-vegetarian {
-                background: linear-gradient(135deg, #F44336 0%, #FF9800 100%);
-            }
-            
-            .meal-plan-header.keto {
-                background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%);
-            }
-            
-            .meal-plan-header.vegan {
-                background: linear-gradient(135deg, #009688 0%, #4CAF50 100%);
-            }
-            
-            .meal-plan-header.diabetic {
-                background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
-            }
-            
-            .meal-plan-header h3 {
-                margin: 0 0 10px 0;
-                font-size: 1.4rem;
-            }
-            
-            .meal-plan-header p {
-                margin: 0;
-                opacity: 0.9;
-                font-size: 0.9rem;
-            }
-            
-            .meal-plan-content {
-                padding: 20px;
-            }
-            
-            .meal-plan-nutrition {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-                margin-bottom: 15px;
-            }
-            
-            .nutrition-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                background-color: #f8f9fa;
-                padding: 10px;
-                border-radius: 5px;
-            }
-            
-            .nutrition-value {
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: #4a5568;
-            }
-            
-            .nutrition-label {
-                font-size: 0.8rem;
-                color: #718096;
-            }
-            
-            .meal-plan-tags {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 5px;
-                margin-bottom: 15px;
-            }
-            
-            .meal-tag {
-                background-color: #e2e8f0;
-                color: #4a5568;
-                font-size: 0.8rem;
-                padding: 3px 8px;
-                border-radius: 15px;
-            }
-            
-            .meal-plan-actions {
-                display: flex;
-                justify-content: center;
-                margin-top: 15px;
-            }
-            
-            .load-plan-btn {
-                background-color: #4a5568;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: 500;
-                transition: all 0.2s ease;
-            }
-            
-            .load-plan-btn:hover {
-                background-color: #2d3748;
-            }
-            
-            .gallery-header {
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            
-            .gallery-header h2 {
-                color: #4a5568;
-                margin-bottom: 10px;
-            }
-            
-            .gallery-header p {
-                color: #718096;
-                margin: 0;
-            }
-            
-            /* Modal styles */
-            .meal-plan-modal {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.5);
-                z-index: 1000;
-                overflow-y: auto;
-            }
-            
-            .meal-plan-modal-content {
-                background-color: white;
-                margin: 50px auto;
-                padding: 30px;
-                border-radius: 10px;
-                max-width: 800px;
-                position: relative;
-            }
-            
-            .close-modal {
-                position: absolute;
-                top: 15px;
-                right: 15px;
-                font-size: 1.5rem;
-                cursor: pointer;
-                color: #718096;
-            }
-            
-            .meal-details-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 20px;
-                margin-top: 20px;
-            }
-            
-            .meal-detail-section {
-                background-color: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-            }
-            
-            .meal-detail-section h4 {
-                margin-top: 0;
-                margin-bottom: 10px;
-                color: #4a5568;
-                font-size: 1.1rem;
-                border-bottom: 1px solid #e2e8f0;
-                padding-bottom: 5px;
-            }
-            
-            .meal-item {
-                margin-bottom: 8px;
-                font-size: 0.9rem;
-            }
-            
-            .meal-item-name {
-                font-weight: 500;
-            }
-            
-            .meal-item-details {
-                color: #718096;
-                font-size: 0.8rem;
-            }
-            
-            .modal-actions {
-                display: flex;
-                justify-content: center;
-                gap: 15px;
-                margin-top: 30px;
-            }
-            
-            .modal-btn {
-                padding: 10px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: 500;
-                transition: all 0.2s ease;
-                border: none;
-            }
-            
-            .load-btn {
-                background-color: #4CAF50;
-                color: white;
-            }
-            
-            .load-btn:hover {
-                background-color: #388E3C;
-            }
-            
-            .cancel-btn {
-                background-color: #e2e8f0;
-                color: #4a5568;
-            }
-            
-            .cancel-btn:hover {
-                background-color: #cbd5e0;
-            }
-            
-            @media (max-width: 768px) {
-                .meal-plans-grid {
-                    grid-template-columns: 1fr;
-                }
-                
-                .meal-plan-modal-content {
-                    margin: 20px;
-                    padding: 20px;
-                }
-                
-                .meal-details-grid {
-                    grid-template-columns: 1fr;
-                }
-            }
-        `;
-        document.head.appendChild(styleElement);
     }
-    
+
     /**
      * Populate the meal plans grid with cards
      */
@@ -714,7 +669,13 @@ class MealPlansGallery {
             `;
             
             mealPlansGrid.appendChild(planCard);
-            resolve();
+        });
+        resolve();
+                } else {
+                    requestAnimationFrame(checkGrid);
+                }
+            };
+            checkGrid();
         });
         
         // Create modal for meal plan details
@@ -907,23 +868,39 @@ class MealPlansGallery {
         
         // Load new meal plan
         Object.entries(plan.meals).forEach(([mealType, items]) => {
+            // Set current meal context for addFoodItem
+            if (window.mealCalculator.currentMeal !== undefined) {
+                window.mealCalculator.currentMeal = mealType;
+            }
+
             items.forEach(item => {
                 // Convert to the format expected by the meal calculator
                 const foodItem = {
-                    label: item.label,
-                    quantity: item.quantity,
-                    measure: item.measure,
-                    nutrition: {
-                        calories: item.calories,
-                        protein: item.protein,
-                        carbs: item.carbs,
-                        fats: item.fats
-                    }
+                    id: Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9),
+                    name: item.label,
+                    portion: item.quantity,
+                    unit: item.measure,
+                    calories: item.calories || 0,
+                    protein: item.protein || 0,
+                    carbs: item.carbs || 0,
+                    fats: item.fats || 0
                 };
                 
-                window.mealCalculator.meals[mealType].push(foodItem);
+                // Use the secure method which validates input
+                if (typeof window.mealCalculator.addFoodItem === 'function') {
+                    window.mealCalculator.addFoodItem(foodItem);
+                } else {
+                    // Fallback
+                    if (!foodItem.id) foodItem.id = Date.now().toString();
+                    window.mealCalculator.meals[mealType].push(foodItem);
+                }
             });
         });
+
+        // Reset current meal
+        if (window.mealCalculator.currentMeal !== undefined) {
+            window.mealCalculator.currentMeal = '';
+        }
         
         // Update nutrition display
         window.mealCalculator.updateNutritionDisplay();
