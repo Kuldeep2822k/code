@@ -559,11 +559,11 @@ class MealCalculator {
             itemElement.innerHTML = `
                 <div class="meal-item-info">
                     <div class="meal-item-name">${escapeHtml(item.name)}</div>
-                    <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
+                    <div class="meal-item-details">${escapeHtml(item.portion)} ${escapeHtml(item.unit)}</div>
                 </div>
                 <div class="meal-item-nutrition">
-                    <div class="meal-item-calories">${item.calories} kcal</div>
-                    <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
+                    <div class="meal-item-calories">${escapeHtml(item.calories)} kcal</div>
+                    <div>P: ${escapeHtml(item.protein)}g | C: ${escapeHtml(item.carbs)}g | F: ${escapeHtml(item.fats)}g</div>
                 </div>
                 <button class="remove-item-btn" aria-label="Remove item">
                     <i class="fas fa-times"></i>
@@ -844,14 +844,37 @@ class MealCalculator {
         if (stored) {
             try {
                 const data = JSON.parse(stored);
+
+                // Security: Validate loaded data to prevent Stored XSS
+                if (data.meals) {
+                    for (const mealType in data.meals) {
+                        if (Array.isArray(data.meals[mealType])) {
+                            data.meals[mealType] = data.meals[mealType].map(item => ({
+                                ...item,
+                                // Enforce types and sanitize
+                                id: String(item.id || Date.now()),
+                                name: String(item.name || 'Unknown'),
+                                portion: Number(item.portion) || 1,
+                                unit: String(item.unit || 'serving'),
+                                calories: Number(item.calories) || 0,
+                                protein: Number(item.protein) || 0,
+                                carbs: Number(item.carbs) || 0,
+                                fats: Number(item.fats) || 0
+                            }));
+                        }
+                    }
+                }
+
                 this.meals = data.meals || this.meals;
                 this.dailyGoals = data.goals || this.dailyGoals;
                 
                 // Update goal inputs
-                document.getElementById('goal-calories').value = this.dailyGoals.calories;
-                document.getElementById('goal-protein').value = this.dailyGoals.protein;
-                document.getElementById('goal-carbs').value = this.dailyGoals.carbs;
-                document.getElementById('goal-fats').value = this.dailyGoals.fats;
+                if (this.dailyGoals) {
+                    document.getElementById('goal-calories').value = Number(this.dailyGoals.calories) || 2000;
+                    document.getElementById('goal-protein').value = Number(this.dailyGoals.protein) || 150;
+                    document.getElementById('goal-carbs').value = Number(this.dailyGoals.carbs) || 250;
+                    document.getElementById('goal-fats').value = Number(this.dailyGoals.fats) || 67;
+                }
             } catch (error) {
                 console.error('Error loading stored data:', error);
             }
