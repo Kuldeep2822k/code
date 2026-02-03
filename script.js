@@ -559,7 +559,7 @@ class MealCalculator {
             itemElement.innerHTML = `
                 <div class="meal-item-info">
                     <div class="meal-item-name">${escapeHtml(item.name)}</div>
-                    <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
+                    <div class="meal-item-details">${escapeHtml(item.portion)} ${escapeHtml(item.unit)}</div>
                 </div>
                 <div class="meal-item-nutrition">
                     <div class="meal-item-calories">${item.calories} kcal</div>
@@ -844,6 +844,26 @@ class MealCalculator {
         if (stored) {
             try {
                 const data = JSON.parse(stored);
+
+                // Security: Validate and sanitize stored meals
+                if (data.meals) {
+                    Object.keys(data.meals).forEach(mealType => {
+                        if (Array.isArray(data.meals[mealType])) {
+                            data.meals[mealType] = data.meals[mealType].map(item => {
+                                // Ensure numeric values are numbers to prevent XSS via type juggling
+                                return {
+                                    ...item,
+                                    calories: Number(item.calories) || 0,
+                                    protein: Number(item.protein) || 0,
+                                    carbs: Number(item.carbs) || 0,
+                                    fats: Number(item.fats) || 0,
+                                    portion: Number(item.portion) || 0
+                                };
+                            });
+                        }
+                    });
+                }
+
                 this.meals = data.meals || this.meals;
                 this.dailyGoals = data.goals || this.dailyGoals;
                 
