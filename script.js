@@ -831,6 +831,54 @@ class MealCalculator {
         this.showMessage('Meal plan exported successfully!', 'success');
     }
 
+    /**
+     * Strictly validates and loads data into the application state
+     * ensuring no malicious data is injected from storage.
+     * @param {Object} data - The parsed JSON data from storage
+     */
+    validateAndLoadData(data) {
+        if (!data || typeof data !== 'object') {
+            console.warn('Invalid data format loaded from storage');
+            return;
+        }
+
+        // Validate and load meals
+        if (data.meals && typeof data.meals === 'object') {
+            const validMeals = { ...this.meals }; // Start with default structure
+
+            Object.keys(validMeals).forEach(mealType => {
+                // Ensure we only process known meal types and data is an array
+                if (Array.isArray(data.meals[mealType])) {
+                    validMeals[mealType] = data.meals[mealType].map(item => {
+                        // Strict sanitization and type conversion
+                        return {
+                            id: String(item.id || Date.now()),
+                            name: String(item.name || 'Unknown Item'),
+                            unit: String(item.unit || 'serving'),
+                            // Enforce numbers for nutrition fields
+                            portion: Number(item.portion) || 1,
+                            calories: Number(item.calories) || 0,
+                            protein: Number(item.protein) || 0,
+                            carbs: Number(item.carbs) || 0,
+                            fats: Number(item.fats) || 0
+                        };
+                    });
+                }
+            });
+            this.meals = validMeals;
+        }
+
+        // Validate and load goals
+        if (data.goals && typeof data.goals === 'object') {
+             this.dailyGoals = {
+                calories: Number(data.goals.calories) || 2000,
+                protein: Number(data.goals.protein) || 150,
+                carbs: Number(data.goals.carbs) || 250,
+                fats: Number(data.goals.fats) || 67
+             };
+        }
+    }
+
     saveData() {
         const data = {
             meals: this.meals,
@@ -844,8 +892,7 @@ class MealCalculator {
         if (stored) {
             try {
                 const data = JSON.parse(stored);
-                this.meals = data.meals || this.meals;
-                this.dailyGoals = data.goals || this.dailyGoals;
+                this.validateAndLoadData(data);
                 
                 // Update goal inputs
                 document.getElementById('goal-calories').value = this.dailyGoals.calories;
