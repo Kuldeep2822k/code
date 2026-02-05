@@ -7,3 +7,8 @@
 **Vulnerability:** The use of `onclick` attributes in `innerHTML` strings (e.g., `onclick="mealCalculator.removeItem('${item.id}')"`) creates an XSS vulnerability if the interpolated variables are controlled by an attacker.
 **Learning:** Even with escaping, inline event handlers are risky and violate CSP best practices.
 **Prevention:** Always attach event listeners programmatically using `addEventListener` after creating elements, which also keeps the data in the closure scope rather than exposing it in the HTML.
+
+## 2025-05-23 - Trusted Storage Fallacy
+**Vulnerability:** The application blindly trusted data loaded from `localStorage`, assuming it adhered to the expected schema (numbers for nutrition values). An attacker could manipulate `localStorage` to inject XSS payloads into these fields.
+**Learning:** Client-side storage (localStorage, sessionStorage, IndexedDB) must be treated as untrusted input, similar to network requests.
+**Prevention:** Implement strict schema validation and type coercion (e.g., `validateAndLoadData`) when loading data from storage before using it in the application.

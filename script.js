@@ -839,13 +839,52 @@ class MealCalculator {
         localStorage.setItem('mealCalculatorData', JSON.stringify(data));
     }
 
+    /**
+     * Validates loaded data to prevent Stored XSS and ensure data integrity
+     * @param {Object} data - The data loaded from storage
+     */
+    validateAndLoadData(data) {
+        if (!data?.meals) return;
+
+        const mealTypes = ['breakfast', 'morning-snack', 'lunch', 'afternoon-snack', 'dinner', 'evening-snack'];
+        const validMeals = {};
+
+        mealTypes.forEach(type => {
+            validMeals[type] = (Array.isArray(data.meals[type]) ? data.meals[type] : [])
+                .filter(item => item && typeof item === 'object')
+                .map(item => {
+                    const cleanItem = { ...item };
+                    // Enforce numeric types for safety
+                    ['calories', 'protein', 'carbs', 'fats', 'portion'].forEach(field => {
+                        cleanItem[field] = Number(item[field]);
+                        if (isNaN(cleanItem[field])) cleanItem[field] = 0;
+                    });
+
+                    // Enforce strings
+                    cleanItem.name = String(item.name || 'Unknown');
+                    cleanItem.unit = String(item.unit || 'g');
+                    cleanItem.id = String(item.id || Date.now());
+
+                    return cleanItem;
+                });
+        });
+        this.meals = validMeals;
+
+        // Validate goals
+        if (data.goals) {
+            ['calories', 'protein', 'carbs', 'fats'].forEach(goal => {
+                const val = Number(data.goals[goal]);
+                if (!isNaN(val)) this.dailyGoals[goal] = val;
+            });
+        }
+    }
+
     loadStoredData() {
         const stored = localStorage.getItem('mealCalculatorData');
         if (stored) {
             try {
                 const data = JSON.parse(stored);
-                this.meals = data.meals || this.meals;
-                this.dailyGoals = data.goals || this.dailyGoals;
+                this.validateAndLoadData(data);
                 
                 // Update goal inputs
                 document.getElementById('goal-calories').value = this.dailyGoals.calories;
