@@ -271,34 +271,32 @@ class MealCalculator {
 
         const foods = await this.searchFoodsAPI(query);
 
-        results.innerHTML = '';
-
         if (foods.length === 0) {
             results.innerHTML = '<div class="food-result-item">No foods found. Try a different search term.</div>';
             return;
         }
 
-        foods.forEach(food => {
-            const item = document.createElement('div');
-            item.className = 'food-result-item';
-            
+        results.innerHTML = foods.map(food => {
             const calories = food.nutrients.ENERC_KCAL || 0;
-            
-            item.innerHTML = `
-                <div class="food-content">
-                    <div class="food-details">
-                <div class="food-name">${escapeHtml(food.label)}</div>
-                <div class="food-calories">${calories} kcal per 100g</div>
+            return `
+                <div class="food-result-item">
+                    <div class="food-content">
+                        <div class="food-details">
+                            <div class="food-name">${escapeHtml(food.label)}</div>
+                            <div class="food-calories">${calories} kcal per 100g</div>
+                        </div>
                     </div>
                 </div>
             `;
-            
-            item.addEventListener('click', () => this.selectFoodAPI(food));
-            results.appendChild(item);
+        }).join('');
+
+        const foodItems = results.querySelectorAll('.food-result-item');
+        foodItems.forEach((item, index) => {
+            item.addEventListener('click', (event) => this.selectFoodAPI(foods[index], event));
         });
     }
 
-    selectFoodAPI(food) {
+    selectFoodAPI(food, event) {
         this.selectedFood = {
             key: food.foodId || food.uri,
             name: food.label,
@@ -522,6 +520,53 @@ class MealCalculator {
         return true;
     }
 
+    /**
+     * Securely adds a food item to the current meal with validation
+     * @param {Object} item - The food item to add
+     * @returns {boolean} - True if added successfully
+     */
+    addFoodItem(item) {
+        if (!this.currentMeal) {
+            this.showMessage('Please select a meal first', 'error');
+            return false;
+        }
+
+        // Security: Input Validation
+        if (!item || typeof item !== 'object') {
+            console.error('Invalid item format');
+            return false;
+        }
+
+        // Validate required fields
+        const requiredFields = ['name', 'calories', 'protein', 'carbs', 'fats', 'portion', 'unit'];
+        for (const field of requiredFields) {
+            if (item[field] === undefined || item[field] === null) {
+                console.error(`Missing field: ${field}`);
+                return false;
+            }
+        }
+
+        // Validate numeric values
+        const numericFields = ['calories', 'protein', 'carbs', 'fats', 'portion'];
+        for (const field of numericFields) {
+            if (typeof item[field] !== 'number' || isNaN(item[field]) || item[field] < 0) {
+                 this.showMessage(`Invalid value for ${field}`, 'error');
+                 return false;
+            }
+        }
+
+        // Ensure ID
+        if (!item.id) {
+            item.id = Date.now().toString();
+        }
+
+        this.meals[this.currentMeal].push(item);
+        this.renderMealItems(this.currentMeal);
+        this.updateNutritionDisplay();
+        this.saveData();
+        return true;
+    }
+
     async renderMealItems(mealType) {
         const container = document.getElementById(`${mealType}-items`);
         if (!container) return;
@@ -547,10 +592,16 @@ class MealCalculator {
                     <div class="meal-item-calories">${item.calories} kcal</div>
                     <div>P: ${item.protein}g | C: ${item.carbs}g | F: ${item.fats}g</div>
                 </div>
-                <button class="remove-item-btn" onclick="mealCalculator.removeItem('${mealType}', '${item.id}')">
+                <button class="remove-item-btn" aria-label="Remove item">
                     <i class="fas fa-times"></i>
                 </button>
             `;
+
+            const removeBtn = itemElement.querySelector('.remove-item-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
+            }
+
             container.appendChild(itemElement);
                     resolve();
         });
