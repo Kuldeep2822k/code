@@ -9,7 +9,92 @@
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
+
+  <!-- Mock DOM for Application Scripts -->
+  <div id="app-mock" style="display: none;">
+    <!-- Search -->
+    <input id="food-search">
+    <div id="food-results"></div>
+
+    <!-- Portion -->
+    <input id="portion-size" value="100">
+    <select id="portion-unit">
+        <option value="gram">gram</option>
+    </select>
+
+    <!-- Goals -->
+    <input id="goal-calories" value="2000">
+    <input id="goal-protein" value="150">
+    <input id="goal-carbs" value="250">
+    <input id="goal-fats" value="67">
+
+    <!-- Image Capture -->
+    <button id="capture-image-btn"></button>
+    <button id="close-image-capture-btn"></button>
+    <button id="retake-image-btn"></button>
+    <div id="image-capture-modal" class="modal"></div>
+    <div id="image-capture-video-container"></div>
+    <div id="image-capture-preview-container"></div>
+    <img id="image-capture-preview">
+    <video id="image-capture-video"></video>
+
+    <!-- Modals -->
+    <div id="food-selector-modal" class="modal"></div>
+    <div id="manual-barcode-modal" class="modal"></div>
+    <div id="recognized-foods-modal" class="modal"></div>
+
+    <!-- Nutrition Display -->
+    <div id="total-calories"></div>
+    <div id="total-protein"></div>
+    <div id="total-carbs"></div>
+    <div id="total-fats"></div>
+    <div id="calories-progress"></div>
+    <div id="calories-text"></div>
+    <div id="protein-progress"></div>
+    <div id="protein-text"></div>
+    <div id="carbs-progress"></div>
+    <div id="carbs-text"></div>
+    <div id="fats-progress"></div>
+    <div id="fats-text"></div>
+
+    <!-- Meal Items Containers -->
+    <div id="breakfast-items"></div>
+    <div id="morning-snack-items"></div>
+    <div id="lunch-items"></div>
+    <div id="afternoon-snack-items"></div>
+    <div id="dinner-items"></div>
+    <div id="evening-snack-items"></div>
+
+    <!-- Charts -->
+    <div id="meal-breakdown-chart"></div>
+
+    <!-- Other UI elements -->
+    <div id="selected-food-name"></div>
+    <div id="nutrition-preview"></div>
+    <div id="recognized-foods"></div>
+    <div class="container"></div>
+
+    <!-- Tabs -->
+    <button class="tab-btn" data-tab="calculator"></button>
+    <button class="tab-btn" data-tab="nutrition"></button>
+    <div id="calculator" class="tab-content"></div>
+    <div id="nutrition" class="tab-content"></div>
+  </div>
+
   <script src="qunit.js"></script>
+
+  <!-- Mocks for External Dependencies -->
+  <script>
+    class MealPlansGallery {
+      async initialize() {}
+    }
+    class NutritionCharts {
+      static async initialize() {}
+      static async init() {}
+    }
+    window.MealPlansGallery = MealPlansGallery;
+    window.NutritionCharts = NutritionCharts;
+  </script>
 
   <!-- Application Scripts -->
   <script src="../script.js"></script>

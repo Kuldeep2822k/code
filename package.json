@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "A comprehensive web application for planning and tracking your complete daily nutrition with a focus on Indian foods. This enhanced version includes advanced features like food image recognition, barcode scanning, and integration with free nutrition APIs, plus a comprehensive Indian foods database.",
+  "main": "animations.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node run-tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kuldeep2822k/code.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kuldeep2822k/code/issues"
+  },
+  "homepage": "https://github.com/Kuldeep2822k/code#readme",
+  "dependencies": {
+    "puppeteer": "^24.37.2"
+  }
+}
