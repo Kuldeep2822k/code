@@ -866,19 +866,77 @@ class MealCalculator {
         localStorage.setItem('mealCalculatorData', JSON.stringify(data));
     }
 
+    /**
+     * Security: Validate data loaded from storage to prevent Stored XSS and DoS
+     * @param {Object} data - The data loaded from localStorage
+     */
+    validateAndLoadData(data) {
+        if (!data || typeof data !== 'object') return false;
+
+        // Validate meals
+        if (data.meals && typeof data.meals === 'object') {
+            Object.keys(this.meals).forEach(mealType => {
+                if (Array.isArray(data.meals[mealType])) {
+                    this.meals[mealType] = data.meals[mealType].filter(item => {
+                        // Validate item structure
+                        if (!item || typeof item !== 'object') return false;
+
+                        // Validate required fields
+                        if (!item.id || !item.name) return false;
+
+                        // Validate numeric fields
+                        const numericFields = ['calories', 'protein', 'carbs', 'fats', 'portion'];
+                        const validNumerics = numericFields.every(field =>
+                            typeof item[field] === 'number' && !isNaN(item[field]) && item[field] >= 0
+                        );
+                        if (!validNumerics) return false;
+
+                        // Validate strings (sanitize/length check)
+                        if (typeof item.name !== 'string' || item.name.length > 100) return false;
+                        if (item.unit && (typeof item.unit !== 'string' || item.unit.length > 20)) return false;
+
+                        // Sanitize
+                        item.name = item.name.trim();
+                        if (item.unit) item.unit = item.unit.trim();
+
+                        return true;
+                    });
+                }
+            });
+        }
+
+        // Validate goals
+        if (data.goals && typeof data.goals === 'object') {
+            const goalFields = ['calories', 'protein', 'carbs', 'fats'];
+            goalFields.forEach(field => {
+                if (typeof data.goals[field] === 'number' && !isNaN(data.goals[field]) && data.goals[field] > 0) {
+                    this.dailyGoals[field] = data.goals[field];
+                }
+            });
+
+            // Update goal inputs if elements exist
+            const elCalories = document.getElementById('goal-calories');
+            if (elCalories) elCalories.value = this.dailyGoals.calories;
+
+            const elProtein = document.getElementById('goal-protein');
+            if (elProtein) elProtein.value = this.dailyGoals.protein;
+
+            const elCarbs = document.getElementById('goal-carbs');
+            if (elCarbs) elCarbs.value = this.dailyGoals.carbs;
+
+            const elFats = document.getElementById('goal-fats');
+            if (elFats) elFats.value = this.dailyGoals.fats;
+        }
+
+        return true;
+    }
+
     loadStoredData() {
         const stored = localStorage.getItem('mealCalculatorData');
         if (stored) {
             try {
                 const data = JSON.parse(stored);
-                this.meals = data.meals || this.meals;
-                this.dailyGoals = data.goals || this.dailyGoals;
-                
-                // Update goal inputs
-                document.getElementById('goal-calories').value = this.dailyGoals.calories;
-                document.getElementById('goal-protein').value = this.dailyGoals.protein;
-                document.getElementById('goal-carbs').value = this.dailyGoals.carbs;
-                document.getElementById('goal-fats').value = this.dailyGoals.fats;
+                this.validateAndLoadData(data);
             } catch (error) {
                 console.error('Error loading stored data:', error);
             }
