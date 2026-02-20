@@ -573,17 +573,13 @@ class MealCalculator {
 
         await new Promise(resolve => {
             requestAnimationFrame(() => {
-        container.innerHTML = '';
-                resolve();
-            });
-        });
+                const fragment = document.createDocumentFragment();
+                container.innerHTML = '';
 
-        await Promise.all(this.meals[mealType].map(async item => {
-            await new Promise(resolve => {
-                requestAnimationFrame(() => {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'meal-item';
-            itemElement.innerHTML = `
+                this.meals[mealType].forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'meal-item';
+                    itemElement.innerHTML = `
                 <div class="meal-item-info">
                     <div class="meal-item-name">${escapeHtml(item.name)}</div>
                     <div class="meal-item-details">${item.portion} ${escapeHtml(item.unit)}</div>
@@ -597,16 +593,18 @@ class MealCalculator {
                 </button>
             `;
 
-            const removeBtn = itemElement.querySelector('.remove-item-btn');
-            if (removeBtn) {
-                removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
-            }
+                    const removeBtn = itemElement.querySelector('.remove-item-btn');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
+                    }
 
-            container.appendChild(itemElement);
-                    resolve();
-        });
+                    fragment.appendChild(itemElement);
+                });
+
+                container.appendChild(fragment);
+                resolve();
             });
-        }));
+        });
     }
 
     async removeItem(mealType, itemId) {
