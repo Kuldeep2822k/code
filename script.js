@@ -561,7 +561,6 @@ class MealCalculator {
         }
 
         this.meals[this.currentMeal].push(item);
-        this.renderMealItems(this.currentMeal);
         this.updateNutritionDisplay();
         this.saveData();
         return true;
