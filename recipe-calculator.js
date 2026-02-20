@@ -234,22 +234,39 @@ class RecipeCalculator {
             ingredientData.push({ name: ingredientName, amount, unit });
         }
 
-        // Search for all ingredients in parallel
+        // Search for all ingredients in parallel with concurrency limit
         try {
-            const searchPromises = ingredientData.map(data =>
-                window.mealCalculator.searchFoodsAPI(data.name)
-            );
+            const CONCURRENCY_LIMIT = 5;
+            const results = [];
 
-            const results = await Promise.all(searchPromises);
+            // Process in chunks to avoid rate limiting
+            for (let i = 0; i < ingredientData.length; i += CONCURRENCY_LIMIT) {
+                const chunk = ingredientData.slice(i, i + CONCURRENCY_LIMIT);
+                const chunkPromises = chunk.map(async data => {
+                    try {
+                        const res = await window.mealCalculator.searchFoodsAPI(data.name);
+                        return { data, res };
+                    } catch (err) {
+                        console.error('API Error:', err);
+                        throw new Error(`Failed to fetch data for "${data.name}"`);
+                    }
+                });
+
+                const chunkResults = await Promise.all(chunkPromises);
+                results.push(...chunkResults);
+            }
 
             // Process results
-            for (let i = 0; i < results.length; i++) {
-                const searchResults = results[i];
-                const data = ingredientData[i];
-                const ingredient = searchResults[0]; // Use first match
-
-                if (!ingredient) {
+            for (const { data, res } of results) {
+                if (!Array.isArray(res) || res.length === 0) {
                     alert(`Could not find nutrition data for ${data.name}`);
+                    return;
+                }
+
+                const ingredient = res[0]; // Use first match
+
+                if (!ingredient || !ingredient.nutrients) {
+                    alert(`Incomplete nutrition data for "${data.name}". Try a more specific ingredient name.`);
                     return;
                 }
 
@@ -262,7 +279,7 @@ class RecipeCalculator {
             }
         } catch (error) {
             console.error('Error fetching ingredient data:', error);
-            alert('An error occurred while fetching ingredient data. Please try again.');
+            alert(error.message || 'An error occurred while fetching ingredient data. Please try again.');
             return;
         }
 
