@@ -218,7 +218,9 @@ class RecipeCalculator {
 
         const ingredients = [];
         const ingredientItems = document.querySelectorAll('.ingredient-item');
+        const ingredientData = [];
 
+        // Validate all ingredients first
         for (const item of ingredientItems) {
             const ingredientName = item.querySelector('.ingredient-name').value.trim();
             const amount = parseFloat(item.querySelector('.ingredient-amount').value);
@@ -229,21 +231,39 @@ class RecipeCalculator {
                 return;
             }
 
-            // Search for ingredient in food database
-            const searchResults = await window.mealCalculator.searchFoodsAPI(ingredientName);
-            const ingredient = searchResults[0]; // Use first match
+            ingredientData.push({ name: ingredientName, amount, unit });
+        }
 
-            if (!ingredient) {
-                alert(`Could not find nutrition data for ${ingredientName}`);
-                return;
+        // Search for all ingredients in parallel
+        try {
+            const searchPromises = ingredientData.map(data =>
+                window.mealCalculator.searchFoodsAPI(data.name)
+            );
+
+            const results = await Promise.all(searchPromises);
+
+            // Process results
+            for (let i = 0; i < results.length; i++) {
+                const searchResults = results[i];
+                const data = ingredientData[i];
+                const ingredient = searchResults[0]; // Use first match
+
+                if (!ingredient) {
+                    alert(`Could not find nutrition data for ${data.name}`);
+                    return;
+                }
+
+                ingredients.push({
+                    name: data.name,
+                    amount: data.amount,
+                    unit: data.unit,
+                    nutrients: ingredient.nutrients
+                });
             }
-
-            ingredients.push({
-                name: ingredientName,
-                amount,
-                unit,
-                nutrients: ingredient.nutrients
-            });
+        } catch (error) {
+            console.error('Error fetching ingredient data:', error);
+            alert('An error occurred while fetching ingredient data. Please try again.');
+            return;
         }
 
         const recipe = {
