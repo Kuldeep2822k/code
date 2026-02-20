@@ -697,8 +697,6 @@
     }
 }
 
-}
-
     // Initialize when DOM is ready
     const initialize = () => {
         if (!window.pdfExporter) {

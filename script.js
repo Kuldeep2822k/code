@@ -562,7 +562,7 @@ class MealCalculator {
 
         this.meals[this.currentMeal].push(item);
         this.renderMealItems(this.currentMeal);
-        this.updateNutritionDisplay();
+        this.updateNutritionStats();
         this.saveData();
         return true;
     }
@@ -612,7 +612,7 @@ class MealCalculator {
     async removeItem(mealType, itemId) {
         this.meals[mealType] = this.meals[mealType].filter(item => item.id !== itemId);
         await this.renderMealItems(mealType);
-        await this.updateNutritionDisplay();
+        await this.updateNutritionStats();
         this.saveData();
         this.showMessage('Food item removed', 'info');
     }
@@ -656,6 +656,13 @@ class MealCalculator {
     }
 
     async updateNutritionDisplay() {
+        await this.updateNutritionStats();
+
+        // Render all meal items
+        await Promise.all(Object.keys(this.meals).map(mealType => this.renderMealItems(mealType)));
+    }
+
+    async updateNutritionStats() {
         // Wait for DOM elements to be available
         await new Promise(resolve => {
             if (document.readyState === 'loading') {
@@ -671,10 +678,17 @@ class MealCalculator {
         const updateElements = async () => {
             return new Promise(resolve => {
                 requestAnimationFrame(() => {
-        document.getElementById('total-calories').textContent = totals.calories;
-        document.getElementById('total-protein').textContent = totals.protein;
-        document.getElementById('total-carbs').textContent = totals.carbs;
-        document.getElementById('total-fats').textContent = totals.fats;
+                    const elCalories = document.getElementById('total-calories');
+                    if (elCalories) elCalories.textContent = totals.calories;
+
+                    const elProtein = document.getElementById('total-protein');
+                    if (elProtein) elProtein.textContent = totals.protein;
+
+                    const elCarbs = document.getElementById('total-carbs');
+                    if (elCarbs) elCarbs.textContent = totals.carbs;
+
+                    const elFats = document.getElementById('total-fats');
+                    if (elFats) elFats.textContent = totals.fats;
                     resolve();
                 });
             });
@@ -682,9 +696,6 @@ class MealCalculator {
 
         await updateElements();
         await this.updateProgressBars(totals);
-        
-        // Render all meal items
-        await Promise.all(Object.keys(this.meals).map(mealType => this.renderMealItems(mealType)));
         
         // Dispatch custom event for charts to update
         document.dispatchEvent(new CustomEvent('mealsUpdated'));
@@ -778,7 +789,7 @@ class MealCalculator {
             fats: parseInt(document.getElementById('goal-fats').value) || 67
         };
         
-        this.updateNutritionDisplay();
+        this.updateNutritionStats();
         this.saveData();
     }
 

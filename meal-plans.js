@@ -364,36 +364,8 @@ class MealPlansGallery {
             checkContainer();
         });
         
-        // Create gallery tab content
-        await new Promise(resolve => {
-            const checkContainer = () => {
-                const container = document.querySelector('.container');
-                if (container) {
-                    const galleryTab = document.createElement('div');
-                    galleryTab.className = 'tab-content';
-                    galleryTab.id = 'meal-plans';
-                    
-                    // Add header
-                    galleryTab.innerHTML = `
-                        <div class="gallery-header">
-                            <h2>Sample Meal Plans</h2>
-                            <p>Browse and load these pre-made meal plans for quick demos</p>
-                        </div>
-                        <div class="meal-plans-grid"></div>
-                    `;
-                    
-                    container.appendChild(galleryTab);
-                    resolve();
-                } else {
-                    requestAnimationFrame(checkContainer);
-                }
-            };
-            checkContainer();
-        });
-        
         // Populate meal plans
         await this.populateMealPlans();
-        }
         
         // Add styles
         const styleElement = document.createElement('style');
@@ -714,7 +686,13 @@ class MealPlansGallery {
             `;
             
             mealPlansGrid.appendChild(planCard);
-            resolve();
+                    });
+                    resolve();
+                } else {
+                    requestAnimationFrame(checkGrid);
+                }
+            };
+            checkGrid();
         });
         
         // Create modal for meal plan details
