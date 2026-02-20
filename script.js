@@ -18,6 +18,75 @@ const USDA_API_URL = 'https://api.nal.usda.gov/fdc/v1';
 const CLARIFAI_API_KEY = 'YOUR_CLARIFAI_API_KEY';
 const CLARIFAI_FOOD_MODEL_ID = 'bd367be194cf45149e75f01d59f77ba7';
 
+// Comprehensive Indian foods database with nutrition information
+const indianFoods = [
+    // Rice and Grains
+    { foodId: 'indian-1', label: 'Basmati Rice, cooked', nutrients: { ENERC_KCAL: 130, PROCNT: 2.7, CHOCDF: 28, FAT: 0.3 }, measure: '100g' },
+    { foodId: 'indian-2', label: 'Brown Rice, cooked', nutrients: { ENERC_KCAL: 111, PROCNT: 2.6, CHOCDF: 23, FAT: 0.9 }, measure: '100g' },
+    { foodId: 'indian-3', label: 'Roti/Chapati', nutrients: { ENERC_KCAL: 264, PROCNT: 9, CHOCDF: 46, FAT: 4.2 }, measure: '100g' },
+    { foodId: 'indian-4', label: 'Naan Bread', nutrients: { ENERC_KCAL: 310, PROCNT: 8, CHOCDF: 52, FAT: 6.5 }, measure: '100g' },
+    { foodId: 'indian-5', label: 'Paratha', nutrients: { ENERC_KCAL: 326, PROCNT: 6.5, CHOCDF: 45, FAT: 12 }, measure: '100g' },
+    { foodId: 'indian-6', label: 'Dosa', nutrients: { ENERC_KCAL: 133, PROCNT: 4.2, CHOCDF: 24, FAT: 2.1 }, measure: '100g' },
+    { foodId: 'indian-7', label: 'Idli', nutrients: { ENERC_KCAL: 39, PROCNT: 2.2, CHOCDF: 7.5, FAT: 0.2 }, measure: '100g' },
+    { foodId: 'indian-8', label: 'Upma', nutrients: { ENERC_KCAL: 156, PROCNT: 4.8, CHOCDF: 28, FAT: 2.8 }, measure: '100g' },
+
+    // Lentils and Pulses
+    { foodId: 'indian-9', label: 'Dal (Lentils), cooked', nutrients: { ENERC_KCAL: 116, PROCNT: 9, CHOCDF: 20, FAT: 0.4 }, measure: '100g' },
+    { foodId: 'indian-10', label: 'Rajma (Kidney Beans)', nutrients: { ENERC_KCAL: 127, PROCNT: 8.7, CHOCDF: 23, FAT: 0.5 }, measure: '100g' },
+    { foodId: 'indian-11', label: 'Chana Dal', nutrients: { ENERC_KCAL: 164, PROCNT: 8.9, CHOCDF: 27, FAT: 2.6 }, measure: '100g' },
+    { foodId: 'indian-12', label: 'Moong Dal', nutrients: { ENERC_KCAL: 105, PROCNT: 7.5, CHOCDF: 19, FAT: 0.4 }, measure: '100g' },
+    { foodId: 'indian-13', label: 'Toor Dal', nutrients: { ENERC_KCAL: 139, PROCNT: 7.8, CHOCDF: 25, FAT: 0.4 }, measure: '100g' },
+
+    // Curries and Main Dishes
+    { foodId: 'indian-14', label: 'Chicken Curry', nutrients: { ENERC_KCAL: 162, PROCNT: 18, CHOCDF: 8, FAT: 7.2 }, measure: '100g' },
+    { foodId: 'indian-15', label: 'Butter Chicken', nutrients: { ENERC_KCAL: 280, PROCNT: 16, CHOCDF: 12, FAT: 18 }, measure: '100g' },
+    { foodId: 'indian-16', label: 'Paneer Tikka', nutrients: { ENERC_KCAL: 265, PROCNT: 18, CHOCDF: 8, FAT: 18 }, measure: '100g' },
+    { foodId: 'indian-17', label: 'Palak Paneer', nutrients: { ENERC_KCAL: 142, PROCNT: 8.5, CHOCDF: 6, FAT: 10 }, measure: '100g' },
+    { foodId: 'indian-18', label: 'Aloo Gobi', nutrients: { ENERC_KCAL: 98, PROCNT: 3.2, CHOCDF: 16, FAT: 3.1 }, measure: '100g' },
+    { foodId: 'indian-19', label: 'Baingan Bharta', nutrients: { ENERC_KCAL: 76, PROCNT: 2.8, CHOCDF: 12, FAT: 2.1 }, measure: '100g' },
+    { foodId: 'indian-20', label: 'Chana Masala', nutrients: { ENERC_KCAL: 164, PROCNT: 8.9, CHOCDF: 27, FAT: 2.6 }, measure: '100g' },
+    { foodId: 'indian-21', label: 'Dal Makhani', nutrients: { ENERC_KCAL: 198, PROCNT: 9.2, CHOCDF: 28, FAT: 6.8 }, measure: '100g' },
+    { foodId: 'indian-22', label: 'Fish Curry', nutrients: { ENERC_KCAL: 145, PROCNT: 20, CHOCDF: 6, FAT: 5.2 }, measure: '100g' },
+    { foodId: 'indian-23', label: 'Mutton Curry', nutrients: { ENERC_KCAL: 185, PROCNT: 22, CHOCDF: 8, FAT: 8.5 }, measure: '100g' },
+
+    // Breads and Accompaniments
+    { foodId: 'indian-24', label: 'Bhatura', nutrients: { ENERC_KCAL: 320, PROCNT: 7.5, CHOCDF: 48, FAT: 11 }, measure: '100g' },
+    { foodId: 'indian-25', label: 'Poori', nutrients: { ENERC_KCAL: 360, PROCNT: 8.5, CHOCDF: 52, FAT: 14 }, measure: '100g' },
+    { foodId: 'indian-26', label: 'Samosa', nutrients: { ENERC_KCAL: 262, PROCNT: 6.5, CHOCDF: 32, FAT: 12 }, measure: '100g' },
+    { foodId: 'indian-27', label: 'Pakora', nutrients: { ENERC_KCAL: 245, PROCNT: 8.2, CHOCDF: 28, FAT: 11 }, measure: '100g' },
+    { foodId: 'indian-28', label: 'Papadum', nutrients: { ENERC_KCAL: 371, PROCNT: 25, CHOCDF: 59, FAT: 1.4 }, measure: '100g' },
+
+    // Sweets and Desserts
+    { foodId: 'indian-29', label: 'Gulab Jamun', nutrients: { ENERC_KCAL: 320, PROCNT: 4.2, CHOCDF: 52, FAT: 10 }, measure: '100g' },
+    { foodId: 'indian-30', label: 'Rasgulla', nutrients: { ENERC_KCAL: 186, PROCNT: 4.8, CHOCDF: 35, FAT: 2.1 }, measure: '100g' },
+    { foodId: 'indian-31', label: 'Jalebi', nutrients: { ENERC_KCAL: 265, PROCNT: 3.2, CHOCDF: 48, FAT: 6.8 }, measure: '100g' },
+    { foodId: 'indian-32', label: 'Kheer', nutrients: { ENERC_KCAL: 142, PROCNT: 3.8, CHOCDF: 24, FAT: 4.2 }, measure: '100g' },
+    { foodId: 'indian-33', label: 'Ladoo', nutrients: { ENERC_KCAL: 385, PROCNT: 6.5, CHOCDF: 52, FAT: 16 }, measure: '100g' },
+
+    // Beverages
+    { foodId: 'indian-34', label: 'Masala Chai', nutrients: { ENERC_KCAL: 45, PROCNT: 1.2, CHOCDF: 8.5, FAT: 1.1 }, measure: '100ml' },
+    { foodId: 'indian-35', label: 'Lassi', nutrients: { ENERC_KCAL: 98, PROCNT: 3.2, CHOCDF: 12, FAT: 4.1 }, measure: '100ml' },
+    { foodId: 'indian-36', label: 'Buttermilk', nutrients: { ENERC_KCAL: 35, PROCNT: 3.5, CHOCDF: 4.8, FAT: 0.9 }, measure: '100ml' },
+
+    // Snacks
+    { foodId: 'indian-37', label: 'Bhel Puri', nutrients: { ENERC_KCAL: 156, PROCNT: 4.8, CHOCDF: 28, FAT: 2.8 }, measure: '100g' },
+    { foodId: 'indian-38', label: 'Pani Puri', nutrients: { ENERC_KCAL: 142, PROCNT: 3.2, CHOCDF: 26, FAT: 2.1 }, measure: '100g' },
+    { foodId: 'indian-39', label: 'Vada Pav', nutrients: { ENERC_KCAL: 285, PROCNT: 8.5, CHOCDF: 42, FAT: 9.8 }, measure: '100g' },
+    { foodId: 'indian-40', label: 'Dahi Vada', nutrients: { ENERC_KCAL: 198, PROCNT: 6.8, CHOCDF: 32, FAT: 4.2 }, measure: '100g' },
+
+    // Vegetables
+    { foodId: 'indian-41', label: 'Bhindi Masala', nutrients: { ENERC_KCAL: 76, PROCNT: 3.8, CHOCDF: 12, FAT: 2.1 }, measure: '100g' },
+    { foodId: 'indian-42', label: 'Gobi Manchurian', nutrients: { ENERC_KCAL: 185, PROCNT: 6.5, CHOCDF: 28, FAT: 6.2 }, measure: '100g' },
+    { foodId: 'indian-43', label: 'Mushroom Curry', nutrients: { ENERC_KCAL: 89, PROCNT: 4.2, CHOCDF: 14, FAT: 2.8 }, measure: '100g' },
+    { foodId: 'indian-44', label: 'Mixed Vegetable Curry', nutrients: { ENERC_KCAL: 98, PROCNT: 3.8, CHOCDF: 16, FAT: 2.5 }, measure: '100g' },
+
+    // Rice Dishes
+    { foodId: 'indian-45', label: 'Biryani', nutrients: { ENERC_KCAL: 285, PROCNT: 12, CHOCDF: 42, FAT: 8.5 }, measure: '100g' },
+    { foodId: 'indian-46', label: 'Pulao', nutrients: { ENERC_KCAL: 198, PROCNT: 4.8, CHOCDF: 36, FAT: 3.2 }, measure: '100g' },
+    { foodId: 'indian-47', label: 'Khichdi', nutrients: { ENERC_KCAL: 156, PROCNT: 6.8, CHOCDF: 28, FAT: 2.1 }, measure: '100g' },
+    { foodId: 'indian-48', label: 'Fried Rice', nutrients: { ENERC_KCAL: 185, PROCNT: 4.2, CHOCDF: 32, FAT: 4.8 }, measure: '100g' }
+];
+
 class MealCalculator {
     constructor() {
         this.meals = {
@@ -50,75 +119,6 @@ class MealCalculator {
     }
 
     getIndianFoodsDatabase(query) {
-        // Comprehensive Indian foods database with nutrition information
-        const indianFoods = [
-            // Rice and Grains
-            { foodId: 'indian-1', label: 'Basmati Rice, cooked', nutrients: { ENERC_KCAL: 130, PROCNT: 2.7, CHOCDF: 28, FAT: 0.3 }, measure: '100g' },
-            { foodId: 'indian-2', label: 'Brown Rice, cooked', nutrients: { ENERC_KCAL: 111, PROCNT: 2.6, CHOCDF: 23, FAT: 0.9 }, measure: '100g' },
-            { foodId: 'indian-3', label: 'Roti/Chapati', nutrients: { ENERC_KCAL: 264, PROCNT: 9, CHOCDF: 46, FAT: 4.2 }, measure: '100g' },
-            { foodId: 'indian-4', label: 'Naan Bread', nutrients: { ENERC_KCAL: 310, PROCNT: 8, CHOCDF: 52, FAT: 6.5 }, measure: '100g' },
-            { foodId: 'indian-5', label: 'Paratha', nutrients: { ENERC_KCAL: 326, PROCNT: 6.5, CHOCDF: 45, FAT: 12 }, measure: '100g' },
-            { foodId: 'indian-6', label: 'Dosa', nutrients: { ENERC_KCAL: 133, PROCNT: 4.2, CHOCDF: 24, FAT: 2.1 }, measure: '100g' },
-            { foodId: 'indian-7', label: 'Idli', nutrients: { ENERC_KCAL: 39, PROCNT: 2.2, CHOCDF: 7.5, FAT: 0.2 }, measure: '100g' },
-            { foodId: 'indian-8', label: 'Upma', nutrients: { ENERC_KCAL: 156, PROCNT: 4.8, CHOCDF: 28, FAT: 2.8 }, measure: '100g' },
-            
-            // Lentils and Pulses
-            { foodId: 'indian-9', label: 'Dal (Lentils), cooked', nutrients: { ENERC_KCAL: 116, PROCNT: 9, CHOCDF: 20, FAT: 0.4 }, measure: '100g' },
-            { foodId: 'indian-10', label: 'Rajma (Kidney Beans)', nutrients: { ENERC_KCAL: 127, PROCNT: 8.7, CHOCDF: 23, FAT: 0.5 }, measure: '100g' },
-            { foodId: 'indian-11', label: 'Chana Dal', nutrients: { ENERC_KCAL: 164, PROCNT: 8.9, CHOCDF: 27, FAT: 2.6 }, measure: '100g' },
-            { foodId: 'indian-12', label: 'Moong Dal', nutrients: { ENERC_KCAL: 105, PROCNT: 7.5, CHOCDF: 19, FAT: 0.4 }, measure: '100g' },
-            { foodId: 'indian-13', label: 'Toor Dal', nutrients: { ENERC_KCAL: 139, PROCNT: 7.8, CHOCDF: 25, FAT: 0.4 }, measure: '100g' },
-            
-            // Curries and Main Dishes
-            { foodId: 'indian-14', label: 'Chicken Curry', nutrients: { ENERC_KCAL: 162, PROCNT: 18, CHOCDF: 8, FAT: 7.2 }, measure: '100g' },
-            { foodId: 'indian-15', label: 'Butter Chicken', nutrients: { ENERC_KCAL: 280, PROCNT: 16, CHOCDF: 12, FAT: 18 }, measure: '100g' },
-            { foodId: 'indian-16', label: 'Paneer Tikka', nutrients: { ENERC_KCAL: 265, PROCNT: 18, CHOCDF: 8, FAT: 18 }, measure: '100g' },
-            { foodId: 'indian-17', label: 'Palak Paneer', nutrients: { ENERC_KCAL: 142, PROCNT: 8.5, CHOCDF: 6, FAT: 10 }, measure: '100g' },
-            { foodId: 'indian-18', label: 'Aloo Gobi', nutrients: { ENERC_KCAL: 98, PROCNT: 3.2, CHOCDF: 16, FAT: 3.1 }, measure: '100g' },
-            { foodId: 'indian-19', label: 'Baingan Bharta', nutrients: { ENERC_KCAL: 76, PROCNT: 2.8, CHOCDF: 12, FAT: 2.1 }, measure: '100g' },
-            { foodId: 'indian-20', label: 'Chana Masala', nutrients: { ENERC_KCAL: 164, PROCNT: 8.9, CHOCDF: 27, FAT: 2.6 }, measure: '100g' },
-            { foodId: 'indian-21', label: 'Dal Makhani', nutrients: { ENERC_KCAL: 198, PROCNT: 9.2, CHOCDF: 28, FAT: 6.8 }, measure: '100g' },
-            { foodId: 'indian-22', label: 'Fish Curry', nutrients: { ENERC_KCAL: 145, PROCNT: 20, CHOCDF: 6, FAT: 5.2 }, measure: '100g' },
-            { foodId: 'indian-23', label: 'Mutton Curry', nutrients: { ENERC_KCAL: 185, PROCNT: 22, CHOCDF: 8, FAT: 8.5 }, measure: '100g' },
-            
-            // Breads and Accompaniments
-            { foodId: 'indian-24', label: 'Bhatura', nutrients: { ENERC_KCAL: 320, PROCNT: 7.5, CHOCDF: 48, FAT: 11 }, measure: '100g' },
-            { foodId: 'indian-25', label: 'Poori', nutrients: { ENERC_KCAL: 360, PROCNT: 8.5, CHOCDF: 52, FAT: 14 }, measure: '100g' },
-            { foodId: 'indian-26', label: 'Samosa', nutrients: { ENERC_KCAL: 262, PROCNT: 6.5, CHOCDF: 32, FAT: 12 }, measure: '100g' },
-            { foodId: 'indian-27', label: 'Pakora', nutrients: { ENERC_KCAL: 245, PROCNT: 8.2, CHOCDF: 28, FAT: 11 }, measure: '100g' },
-            { foodId: 'indian-28', label: 'Papadum', nutrients: { ENERC_KCAL: 371, PROCNT: 25, CHOCDF: 59, FAT: 1.4 }, measure: '100g' },
-            
-            // Sweets and Desserts
-            { foodId: 'indian-29', label: 'Gulab Jamun', nutrients: { ENERC_KCAL: 320, PROCNT: 4.2, CHOCDF: 52, FAT: 10 }, measure: '100g' },
-            { foodId: 'indian-30', label: 'Rasgulla', nutrients: { ENERC_KCAL: 186, PROCNT: 4.8, CHOCDF: 35, FAT: 2.1 }, measure: '100g' },
-            { foodId: 'indian-31', label: 'Jalebi', nutrients: { ENERC_KCAL: 265, PROCNT: 3.2, CHOCDF: 48, FAT: 6.8 }, measure: '100g' },
-            { foodId: 'indian-32', label: 'Kheer', nutrients: { ENERC_KCAL: 142, PROCNT: 3.8, CHOCDF: 24, FAT: 4.2 }, measure: '100g' },
-            { foodId: 'indian-33', label: 'Ladoo', nutrients: { ENERC_KCAL: 385, PROCNT: 6.5, CHOCDF: 52, FAT: 16 }, measure: '100g' },
-            
-            // Beverages
-            { foodId: 'indian-34', label: 'Masala Chai', nutrients: { ENERC_KCAL: 45, PROCNT: 1.2, CHOCDF: 8.5, FAT: 1.1 }, measure: '100ml' },
-            { foodId: 'indian-35', label: 'Lassi', nutrients: { ENERC_KCAL: 98, PROCNT: 3.2, CHOCDF: 12, FAT: 4.1 }, measure: '100ml' },
-            { foodId: 'indian-36', label: 'Buttermilk', nutrients: { ENERC_KCAL: 35, PROCNT: 3.5, CHOCDF: 4.8, FAT: 0.9 }, measure: '100ml' },
-            
-            // Snacks
-            { foodId: 'indian-37', label: 'Bhel Puri', nutrients: { ENERC_KCAL: 156, PROCNT: 4.8, CHOCDF: 28, FAT: 2.8 }, measure: '100g' },
-            { foodId: 'indian-38', label: 'Pani Puri', nutrients: { ENERC_KCAL: 142, PROCNT: 3.2, CHOCDF: 26, FAT: 2.1 }, measure: '100g' },
-            { foodId: 'indian-39', label: 'Vada Pav', nutrients: { ENERC_KCAL: 285, PROCNT: 8.5, CHOCDF: 42, FAT: 9.8 }, measure: '100g' },
-            { foodId: 'indian-40', label: 'Dahi Vada', nutrients: { ENERC_KCAL: 198, PROCNT: 6.8, CHOCDF: 32, FAT: 4.2 }, measure: '100g' },
-            
-            // Vegetables
-            { foodId: 'indian-41', label: 'Bhindi Masala', nutrients: { ENERC_KCAL: 76, PROCNT: 3.8, CHOCDF: 12, FAT: 2.1 }, measure: '100g' },
-            { foodId: 'indian-42', label: 'Gobi Manchurian', nutrients: { ENERC_KCAL: 185, PROCNT: 6.5, CHOCDF: 28, FAT: 6.2 }, measure: '100g' },
-            { foodId: 'indian-43', label: 'Mushroom Curry', nutrients: { ENERC_KCAL: 89, PROCNT: 4.2, CHOCDF: 14, FAT: 2.8 }, measure: '100g' },
-            { foodId: 'indian-44', label: 'Mixed Vegetable Curry', nutrients: { ENERC_KCAL: 98, PROCNT: 3.8, CHOCDF: 16, FAT: 2.5 }, measure: '100g' },
-            
-            // Rice Dishes
-            { foodId: 'indian-45', label: 'Biryani', nutrients: { ENERC_KCAL: 285, PROCNT: 12, CHOCDF: 42, FAT: 8.5 }, measure: '100g' },
-            { foodId: 'indian-46', label: 'Pulao', nutrients: { ENERC_KCAL: 198, PROCNT: 4.8, CHOCDF: 36, FAT: 3.2 }, measure: '100g' },
-            { foodId: 'indian-47', label: 'Khichdi', nutrients: { ENERC_KCAL: 156, PROCNT: 6.8, CHOCDF: 28, FAT: 2.1 }, measure: '100g' },
-            { foodId: 'indian-48', label: 'Fried Rice', nutrients: { ENERC_KCAL: 185, PROCNT: 4.2, CHOCDF: 32, FAT: 4.8 }, measure: '100g' }
-        ];
-        
         // Filter Indian foods based on query
         return indianFoods.filter(food => 
             food.label.toLowerCase().includes(query.toLowerCase())
