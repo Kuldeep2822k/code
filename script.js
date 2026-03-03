@@ -580,16 +580,9 @@ class MealCalculator {
         const container = document.getElementById(`${mealType}-items`);
         if (!container) return;
 
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-        container.innerHTML = '';
-                resolve();
-            });
-        });
+        const fragment = document.createDocumentFragment();
 
-        await Promise.all(this.meals[mealType].map(async item => {
-            await new Promise(resolve => {
-                requestAnimationFrame(() => {
+        this.meals[mealType].forEach(item => {
             const itemElement = document.createElement('div');
             itemElement.className = 'meal-item';
             itemElement.innerHTML = `
@@ -611,11 +604,16 @@ class MealCalculator {
                 removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
             }
 
-            container.appendChild(itemElement);
-                    resolve();
+            fragment.appendChild(itemElement);
         });
+
+        await new Promise(resolve => {
+            requestAnimationFrame(() => {
+                container.innerHTML = '';
+                container.appendChild(fragment);
+                resolve();
             });
-        }));
+        });
     }
 
     async removeItem(mealType, itemId) {

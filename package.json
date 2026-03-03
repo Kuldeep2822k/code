@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/Kuldeep2822k/code#readme",
   "dependencies": {
-    "puppeteer": "^24.37.2"
+    "puppeteer": "^24.37.5"
   }
 }

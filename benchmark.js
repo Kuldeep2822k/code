@@ -1,90 +1,60 @@
+const puppeteer = require('puppeteer');
+const path = require('path');
 const fs = require('fs');
 
-const ITERATIONS = 10;
-const INGREDIENTS_COUNT = 5;
-
-// Mock window and DOM
-global.window = {};
-global.document = {
-    readyState: 'complete',
-    body: { appendChild: () => {} },
-    createElement: () => ({ innerHTML: '' }),
-    getElementById: (id) => {
-        if (id === 'recipe-name') return { value: 'Test Recipe' };
-        if (id === 'recipe-description') return { value: 'Test Description' };
-        if (id === 'recipe-instructions') return { value: 'Test Instructions' };
-        if (id === 'recipe-servings') return { value: '4' };
-        return { value: 'test' };
-    },
-    querySelectorAll: () => {
-        return Array.from({ length: INGREDIENTS_COUNT }).map((_, i) => ({
-            querySelector: (selector) => {
-                if (selector === '.ingredient-name') return { value: `Ingredient ${i}` };
-                if (selector === '.ingredient-amount') return { value: '1' };
-                if (selector === '.ingredient-unit') return { value: 'g' };
-                return { value: '' };
-            }
-        }));
-    }
-};
-
-global.alert = () => {};
-global.requestAnimationFrame = (cb) => cb();
-
-// Mock the API to simulate network delay
-global.window.mealCalculator = {
-    searchFoodsAPI: async (query) => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve([{ nutrients: { ENERC_KCAL: 100 } }]);
-            }, 50); // 50ms simulated network delay
-        });
-    },
-    currentMeal: 'breakfast',
-    addFoodItem: () => true,
-    showMessage: () => {}
-};
-
-// Evaluate the recipe-calculator.js script inside this context
-const code = fs.readFileSync('recipe-calculator.js', 'utf8');
-eval(code);
-
-async function runBenchmark(name, func) {
-    console.log(`Running benchmark: ${name}`);
-
-    // Warmup
-    for (let i = 0; i < 2; i++) {
-        await func();
-    }
-
-    const start = Date.now();
-    for (let i = 0; i < ITERATIONS; i++) {
-        await func();
-    }
-    const end = Date.now();
-
-    const totalTime = end - start;
-    const avgTime = totalTime / ITERATIONS;
-
-    console.log(`Total time (${ITERATIONS} runs): ${totalTime}ms`);
-    console.log(`Average time per run: ${avgTime}ms\n`);
-
-    return avgTime;
-}
-
-async function main() {
-    const calc = new window.RecipeCalculator();
-    calc.recipes = [];
-
-    // We need to temporarily mock closeRecipeModal and calculateRecipeNutrition
-    // to just do nothing or return dummy so we only measure the async part.
-    calc.closeRecipeModal = () => {};
-    calc.calculateRecipeNutrition = () => ({});
-
-    // Run benchmark with original implementation
-    await runBenchmark('Original (Serial)', async () => {
-        await calc.saveRecipe();
+(async () => {
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-}
+    const page = await browser.newPage();
 
-main().catch(console.error);
+    // Serve from file://
+    const indexPath = path.join(__dirname, 'index.html');
+    await page.goto(`file://${indexPath}`, { waitUntil: 'networkidle0' });
+
+    // Inject benchmark logic
+    const results = await page.evaluate(async () => {
+        // Wait for mealCalculator to be ready
+        await new Promise(resolve => {
+            if (window.mealCalculator) resolve();
+            else {
+                const interval = setInterval(() => {
+                    if (window.mealCalculator) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 100);
+            }
+        });
+
+        // Populate with items
+        const numItems = 1000;
+        window.mealCalculator.meals['breakfast'] = Array.from({ length: numItems }).map((_, i) => ({
+            id: `item-${i}`,
+            name: `Test Item ${i}`,
+            portion: 1,
+            unit: 'serving',
+            calories: 100,
+            protein: 10,
+            carbs: 10,
+            fats: 10
+        }));
+
+        const container = document.getElementById('breakfast-items');
+
+        const start = performance.now();
+        await window.mealCalculator.renderMealItems('breakfast');
+        const end = performance.now();
+
+        return {
+            timeMs: end - start,
+            numItems,
+            childCount: container ? container.children.length : -1
+        };
+    });
+
+    console.log(`Rendered ${results.numItems} items in ${results.timeMs.toFixed(2)}ms (Resulting child count: ${results.childCount})`);
+
+    await browser.close();
+})();
