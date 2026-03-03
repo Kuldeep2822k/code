@@ -36,6 +36,7 @@ class MealCalculator {
         };
         this.currentMeal = '';
         this.selectedFood = null;
+        this.saveTimeout = null;
         this.init();
 
         // Image capture state
@@ -328,6 +329,14 @@ class MealCalculator {
             } else {
                 resolve();
             }
+        });
+
+        // Ensure data is saved when leaving the page
+        window.addEventListener('pagehide', () => {
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+            this._persistData();
         });
 
         // Tab switching
@@ -859,11 +868,36 @@ class MealCalculator {
     }
 
     saveData() {
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+        }
+
+        // Debounce saves to prevent blocking UI during rapid updates
+        // Use requestIdleCallback to perform the expensive serialization/storage when main thread is free
+        this.saveTimeout = setTimeout(() => {
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(() => this._persistData(), { timeout: 2000 });
+            } else {
+                // Fallback for environments without requestIdleCallback
+                setTimeout(() => this._persistData(), 0);
+            }
+        }, 1000);
+    }
+
+    _persistData() {
         const data = {
             meals: this.meals,
             goals: this.dailyGoals
         };
-        localStorage.setItem('mealCalculatorData', JSON.stringify(data));
+        try {
+            localStorage.setItem('mealCalculatorData', JSON.stringify(data));
+        } catch (error) {
+            console.error('Error saving data:', error);
+            // In a real app, we might want to notify the user if storage is full
+            if (error.name === 'QuotaExceededError') {
+                this.showMessage('Storage full: Unable to save data', 'error');
+            }
+        }
     }
 
     /**
