@@ -217,8 +217,10 @@ class RecipeCalculator {
         }
 
         const ingredients = [];
-        const ingredientItems = document.querySelectorAll('.ingredient-item');
+        const ingredientItems = Array.from(document.querySelectorAll('.ingredient-item'));
+        const pendingItems = [];
 
+        // First pass: extract data and validate
         for (const item of ingredientItems) {
             const ingredientName = item.querySelector('.ingredient-name').value.trim();
             const amount = parseFloat(item.querySelector('.ingredient-amount').value);
@@ -229,21 +231,35 @@ class RecipeCalculator {
                 return;
             }
 
-            // Search for ingredient in food database
-            const searchResults = await window.mealCalculator.searchFoodsAPI(ingredientName);
-            const ingredient = searchResults[0]; // Use first match
+            pendingItems.push({ ingredientName, amount, unit });
+        }
 
-            if (!ingredient) {
-                alert(`Could not find nutrition data for ${ingredientName}`);
-                return;
+        // Process in chunks of 5 to avoid API rate limiting
+        const chunkSize = 5;
+        for (let i = 0; i < pendingItems.length; i += chunkSize) {
+            const chunk = pendingItems.slice(i, i + chunkSize);
+
+            // Search for ingredients in parallel for this chunk
+            const searchPromises = chunk.map(item => window.mealCalculator.searchFoodsAPI(item.ingredientName));
+            const chunkResults = await Promise.all(searchPromises);
+
+            for (let j = 0; j < chunk.length; j++) {
+                const item = chunk[j];
+                const searchResults = chunkResults[j];
+                const ingredient = searchResults && searchResults[0];
+
+                if (!ingredient) {
+                    alert(`Could not find nutrition data for ${item.ingredientName}`);
+                    return;
+                }
+
+                ingredients.push({
+                    name: item.ingredientName,
+                    amount: item.amount,
+                    unit: item.unit,
+                    nutrients: ingredient.nutrients
+                });
             }
-
-            ingredients.push({
-                name: ingredientName,
-                amount,
-                unit,
-                nutrients: ingredient.nutrients
-            });
         }
 
         const recipe = {
