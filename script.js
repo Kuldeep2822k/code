@@ -693,35 +693,35 @@ class MealCalculator {
     async updateProgressBars(totals) {
         const nutrients = ['calories', 'protein', 'carbs', 'fats'];
         
-        await Promise.all(nutrients.map(async nutrient => {
-            const current = totals[nutrient];
-            const goal = this.dailyGoals[nutrient];
-            const percentage = Math.min((current / goal) * 100, 100);
-            
-            await new Promise(resolve => {
-                requestAnimationFrame(() => {
-            const progressFill = document.getElementById(`${nutrient}-progress`);
-            const progressText = document.getElementById(`${nutrient}-text`);
-            
+        await new Promise(resolve => {
+            requestAnimationFrame(() => {
+                nutrients.forEach(nutrient => {
+                    const current = totals[nutrient];
+                    const goal = this.dailyGoals[nutrient];
+                    const percentage = Math.min((current / goal) * 100, 100);
+
+                    const progressFill = document.getElementById(`${nutrient}-progress`);
+                    const progressText = document.getElementById(`${nutrient}-text`);
+
                     if (progressFill && progressText) {
-            progressFill.style.width = `${percentage}%`;
-            
-            const unit = nutrient === 'calories' ? 'kcal' : 'g';
-            progressText.textContent = `${current} / ${goal} ${unit}`;
-            
-            // Change color based on progress
-            if (percentage >= 90) {
-                progressFill.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
-            } else if (percentage >= 50) {
-                progressFill.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
-            } else {
-                progressFill.style.background = 'linear-gradient(90deg, #fc8181, #f56565)';
-            }
+                        progressFill.style.width = `${percentage}%`;
+
+                        const unit = nutrient === 'calories' ? 'kcal' : 'g';
+                        progressText.textContent = `${current} / ${goal} ${unit}`;
+
+                        // Change color based on progress
+                        if (percentage >= 90) {
+                            progressFill.style.background = 'linear-gradient(90deg, #48bb78, #38a169)';
+                        } else if (percentage >= 50) {
+                            progressFill.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
+                        } else {
+                            progressFill.style.background = 'linear-gradient(90deg, #fc8181, #f56565)';
+                        }
                     }
-                    resolve();
                 });
+                resolve();
             });
-        }));
+        });
     }
 
     async updateMealBreakdown() {
