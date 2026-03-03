@@ -746,31 +746,31 @@ class MealCalculator {
         const chart = document.getElementById('meal-breakdown-chart');
         if (!chart) return;
 
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-        chart.innerHTML = '';
-                resolve();
-            });
-        });
+        const totals = this.calculateTotalNutrition();
+        const totalCalories = totals.calories;
 
-        await Promise.all(Object.entries(this.meals).map(async ([mealType, items]) => {
-            const mealCalories = items.reduce((sum, item) => sum + item.calories, 0);
-            
-            if (mealCalories > 0) {
-                await new Promise(resolve => {
-                    requestAnimationFrame(() => {
-                const item = document.createElement('div');
-                item.className = 'breakdown-item';
-                item.innerHTML = `
-                    <div class="breakdown-item-name">${escapeHtml(this.formatMealName(mealType))}</div>
-                    <div class="breakdown-item-calories">${mealCalories} kcal</div>
+        // Build the HTML string for all items synchronously
+        const breakdownHtml = Object.entries(this.meals)
+            .map(([mealType, items]) => {
+                const mealCalories = items.reduce((sum, item) => sum + item.calories, 0);
+                if (mealCalories <= 0) return '';
+
+                return `
+                    <div class="breakdown-item">
+                        <div class="breakdown-item-name">${escapeHtml(this.formatMealName(mealType))}</div>
+                        <div class="breakdown-item-calories">${mealCalories} kcal</div>
+                        <div class="breakdown-item-bar">
+                            <div class="breakdown-item-fill" style="width: ${(mealCalories / Math.max(1, totalCalories)) * 100}%"></div>
+                        </div>
+                    </div>
                 `;
-                chart.appendChild(item);
-                        resolve();
-                    });
+            })
+            .join('');
+
+        // Apply all updates in a single frame
+        requestAnimationFrame(() => {
+            chart.innerHTML = breakdownHtml;
         });
-            }
-        }));
     }
 
     formatMealName(mealType) {
