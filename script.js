@@ -36,6 +36,7 @@ class MealCalculator {
         };
         this.currentMeal = '';
         this.selectedFood = null;
+        this.saveTimeout = null;
         this.init();
 
         // Image capture state
@@ -328,6 +329,14 @@ class MealCalculator {
             } else {
                 resolve();
             }
+        });
+
+        // Ensure data is saved when leaving the page
+        window.addEventListener('pagehide', () => {
+            if (this.saveTimeout) {
+                clearTimeout(this.saveTimeout);
+            }
+            this._persistData();
         });
 
         // Tab switching
@@ -735,31 +744,31 @@ class MealCalculator {
         const chart = document.getElementById('meal-breakdown-chart');
         if (!chart) return;
 
-        await new Promise(resolve => {
-            requestAnimationFrame(() => {
-        chart.innerHTML = '';
-                resolve();
-            });
-        });
+        const totals = this.calculateTotalNutrition();
+        const totalCalories = totals.calories;
 
-        await Promise.all(Object.entries(this.meals).map(async ([mealType, items]) => {
-            const mealCalories = items.reduce((sum, item) => sum + item.calories, 0);
-            
-            if (mealCalories > 0) {
-                await new Promise(resolve => {
-                    requestAnimationFrame(() => {
-                const item = document.createElement('div');
-                item.className = 'breakdown-item';
-                item.innerHTML = `
-                    <div class="breakdown-item-name">${escapeHtml(this.formatMealName(mealType))}</div>
-                    <div class="breakdown-item-calories">${mealCalories} kcal</div>
+        // Build the HTML string for all items synchronously
+        const breakdownHtml = Object.entries(this.meals)
+            .map(([mealType, items]) => {
+                const mealCalories = items.reduce((sum, item) => sum + item.calories, 0);
+                if (mealCalories <= 0) return '';
+
+                return `
+                    <div class="breakdown-item">
+                        <div class="breakdown-item-name">${escapeHtml(this.formatMealName(mealType))}</div>
+                        <div class="breakdown-item-calories">${mealCalories} kcal</div>
+                        <div class="breakdown-item-bar">
+                            <div class="breakdown-item-fill" style="width: ${(mealCalories / Math.max(1, totalCalories)) * 100}%"></div>
+                        </div>
+                    </div>
                 `;
-                chart.appendChild(item);
-                        resolve();
-                    });
+            })
+            .join('');
+
+        // Apply all updates in a single frame
+        requestAnimationFrame(() => {
+            chart.innerHTML = breakdownHtml;
         });
-            }
-        }));
     }
 
     formatMealName(mealType) {
@@ -857,11 +866,36 @@ class MealCalculator {
     }
 
     saveData() {
+        if (this.saveTimeout) {
+            clearTimeout(this.saveTimeout);
+        }
+
+        // Debounce saves to prevent blocking UI during rapid updates
+        // Use requestIdleCallback to perform the expensive serialization/storage when main thread is free
+        this.saveTimeout = setTimeout(() => {
+            if ('requestIdleCallback' in window) {
+                window.requestIdleCallback(() => this._persistData(), { timeout: 2000 });
+            } else {
+                // Fallback for environments without requestIdleCallback
+                setTimeout(() => this._persistData(), 0);
+            }
+        }, 1000);
+    }
+
+    _persistData() {
         const data = {
             meals: this.meals,
             goals: this.dailyGoals
         };
-        localStorage.setItem('mealCalculatorData', JSON.stringify(data));
+        try {
+            localStorage.setItem('mealCalculatorData', JSON.stringify(data));
+        } catch (error) {
+            console.error('Error saving data:', error);
+            // In a real app, we might want to notify the user if storage is full
+            if (error.name === 'QuotaExceededError') {
+                this.showMessage('Storage full: Unable to save data', 'error');
+            }
+        }
     }
 
     /**
