@@ -368,47 +368,6 @@
         </div>
     </div>
 
-    <!-- Recipe Calculator Modal -->
-    <div id="recipe-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Create Recipe</h3>
-                <span class="close-btn" onclick="recipeCalculator.closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form class="recipe-form" onsubmit="recipeCalculator.saveRecipe(event)">
-                    <div>
-                        <label for="recipe-name">Recipe Name:</label>
-                        <input type="text" id="recipe-name" required>
-                    </div>
-                    
-                    <div>
-                        <label for="recipe-description">Description:</label>
-                        <textarea id="recipe-description" rows="3"></textarea>
-                    </div>
-                    
-                    <div class="recipe-servings">
-                        <label for="recipe-servings">Servings:</label>
-                        <input type="number" id="recipe-servings" value="1" min="1" required>
-                    </div>
-                    
-                    <div>
-                        <label>Ingredients:</label>
-                        <div id="ingredients-list"></div>
-                        <button type="button" class="add-btn" onclick="recipeCalculator.addIngredientField()">
-                            <i class="fas fa-plus"></i> Add Ingredient
-                        </button>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="cancel-btn" onclick="recipeCalculator.closeModal()">Cancel</button>
-                        <button type="submit" class="save-btn">Save Recipe</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 
