@@ -598,10 +598,10 @@ class MealCalculator {
                 </button>
             `;
 
-            const removeBtn = itemElement.querySelector('.remove-item-btn');
-            if (removeBtn) {
-                removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
-            }
+                    const removeBtn = itemElement.querySelector('.remove-item-btn');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', () => this.removeItem(mealType, item.id));
+                    }
 
             fragment.appendChild(itemElement);
         });
