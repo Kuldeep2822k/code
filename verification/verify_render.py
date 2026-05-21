@@ -1,5 +1,5 @@
 
-import os
+from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 def verify_render():
@@ -16,8 +16,9 @@ def verify_render():
             """)
 
             # Load the page
-            cwd = os.getcwd()
-            page.goto(f"file://{cwd}/index.html")
+            script_dir = Path(__file__).resolve().parent
+            repo_root = script_dir.parent
+            page.goto((repo_root / "index.html").as_uri())
 
             # Wait for initialization
             page.wait_for_function("typeof window.mealCalculator !== 'undefined' && window.mealCalculator.meals")
@@ -53,7 +54,7 @@ def verify_render():
             # Take screenshot of the breakfast section for manual verification if needed
             # These are git-ignored
             print("Taking screenshot...")
-            page.locator("#breakfast-items").screenshot(path="verification/render_verify.png")
+            page.locator("#breakfast-items").screenshot(path=str(script_dir / "render_verify.png"))
 
             count = page.locator("#breakfast-items .meal-item").count()
             print(f"Found {count} items.")
