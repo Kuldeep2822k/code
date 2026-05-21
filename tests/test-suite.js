@@ -171,6 +171,40 @@ QUnit.module('MealCalculator', function(hooks) {
     assert.strictEqual(mealCalculator.convertPortionToGrams(1, 'serving'), 100, 'serving conversion is correct');
     assert.strictEqual(mealCalculator.convertPortionToGrams(0, 'cup'), 0, 'Handles zero portion size');
   });
+
+  QUnit.test('renderMealItems renders meal-item elements with expected content', async function(assert) {
+    mealCalculator.meals.breakfast = [
+      {
+        id: 'item-1',
+        name: 'Poha',
+        calories: 250,
+        protein: 7,
+        carbs: 35,
+        fats: 8,
+        portion: 1,
+        unit: 'bowl'
+      },
+      {
+        id: 'item-2',
+        name: 'Idli',
+        calories: 120,
+        protein: 4,
+        carbs: 22,
+        fats: 2,
+        portion: 2,
+        unit: 'piece'
+      }
+    ];
+
+    await mealCalculator.renderMealItems('breakfast');
+
+    const container = document.getElementById('breakfast-items');
+    const items = container.querySelectorAll('.meal-item');
+
+    assert.strictEqual(items.length, 2, 'Renders the correct number of meal items');
+    assert.ok(items[0].textContent.includes('Poha'), 'Renders first item content');
+    assert.ok(items[1].textContent.includes('Idli'), 'Renders second item content');
+  });
 });
 
 QUnit.module('MealCalculator.addFoodItem', function(hooks) {
