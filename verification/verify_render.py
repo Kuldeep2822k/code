@@ -1,4 +1,8 @@
 
+"""
+Functional render verification script for meal items.
+This script validates rendering correctness and is not a performance benchmark.
+"""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -42,7 +46,7 @@ def verify_render():
                             fats: 10
                         });
                     }
-                    // Direct mutation is used here for performance testing setup, as user flow is tested elsewhere
+                    // Direct mutation is used here for deterministic functional verification setup, as user flow is tested elsewhere
                     window.mealCalculator.meals['breakfast'] = items;
                     await window.mealCalculator.renderMealItems('breakfast');
                 }
