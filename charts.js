@@ -66,16 +66,9 @@
 
         async init() {
             // Wait for document.body to be available
-            await new Promise(resolve => {
-                const checkBody = () => {
-                    if (document.body) {
-                        resolve();
-                    } else {
-                        requestAnimationFrame(checkBody);
-                    }
-                };
-                checkBody();
-            });
+            if (!document.body) {
+                await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+            }
     
             // Add Chart.js library if not already included
             await this.loadChartJsLibrary();
